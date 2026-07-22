@@ -12,3 +12,8 @@ dist/
 # Base de datos local (SQLite temporal)
 *.db
 *.db-journal
+/generated/prisma
+
+.agents
+.claude
+.windsurf

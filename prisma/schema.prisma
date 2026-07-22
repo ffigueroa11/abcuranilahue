@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Club {
+  id          Int       @id @default(autoincrement())
+  nombre      String
+  logo_url    String?
+  jugadores   Jugador[]
+  partidosLoc Partido[] @relation("Local")
+  partidosVis Partido[] @relation("Visita")
+}
+
+model Jugador {
+  id          Int       @id @default(autoincrement())
+  club_id     Int
+  nombre      String
+  numero      Int
+  posicion    String?
+  activo      Boolean   @default(true)
+  
+  club        Club      @relation(fields: [club_id], references: [id])
+  estadisticas EstadisticaPartido[]
+}
+
+model Partido {
+  id              Int       @id @default(autoincrement())
+  jornada         Int       
+  fecha_hora      DateTime
+  local_id        Int
+  visita_id       Int
+  estado          String    @default("PROGRAMADO") 
+  youtube_live_id String?   
+  score_local     Int       @default(0)
+  score_visita    Int       @default(0)
+  
+  local           Club      @relation("Local", fields: [local_id], references: [id])
+  visita          Club      @relation("Visita", fields: [visita_id], references: [id])
+  estadisticas    EstadisticaPartido[]
+}
+
+model EstadisticaPartido {
+  id          Int      @id @default(autoincrement())
+  partido_id  Int
+  jugador_id  Int
+  puntos      Int      @default(0)
+  faltas      Int      @default(0)
+  triples     Int      @default(0)
+  
+  partido     Partido  @relation(fields: [partido_id], references: [id])
+  jugador     Jugador  @relation(fields: [jugador_id], references: [id])
+}
