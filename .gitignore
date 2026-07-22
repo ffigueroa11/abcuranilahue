@@ -1,0 +1,14 @@
+# Dependencias
+node_modules/
+
+# Entornos de Nuxt
+.nuxt/
+.output/
+dist/
+
+# Variables de entorno (Seguridad)
+.env
+
+# Base de datos local (SQLite temporal)
+*.db
+*.db-journal
