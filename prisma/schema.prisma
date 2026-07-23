@@ -8,25 +8,42 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+// 1. NUEVO: Modelo de Categorías
+model Categoria {
+  id         Int             @id @default(autoincrement())
+  nombre     String          // Ej: "TODO COMPETIDOR", "SENIOR", "DAMAS", etc.
+  
+  jugadores  Jugador[]       // Relación muchos a muchos implícita (Nuxt/Prisma la maneja sola)
+  partidos   Partido[]
+  posiciones TablaPosicion[]
+}
+
 model Club {
-  id          Int       @id @default(autoincrement())
+  id          Int             @id @default(autoincrement())
   nombre      String
   logo_url    String?
+  
   jugadores   Jugador[]
-  partidosLoc Partido[] @relation("Local")
-  partidosVis Partido[] @relation("Visita")
+  partidosLoc Partido[]       @relation("Local")
+  partidosVis Partido[]       @relation("Visita")
+  
+  // NUEVO: Relación a la tabla de posiciones
+  posiciones  TablaPosicion[]
 }
 
 model Jugador {
-  id          Int       @id @default(autoincrement())
-  club_id     Int
-  nombre      String
-  numero      Int
-  posicion    String?
-  activo      Boolean   @default(true)
+  id           Int                  @id @default(autoincrement())
+  club_id      Int
+  nombre       String
+  numero       Int
+  posicion     String?
+  activo       Boolean              @default(true)
   
-  club        Club      @relation(fields: [club_id], references: [id])
+  club         Club                 @relation(fields: [club_id], references: [id])
   estadisticas EstadisticaPartido[]
+  
+  // NUEVO: Un jugador puede estar inscrito en 1 o más categorías
+  categorias   Categoria[]
 }
 
 model Partido {
@@ -35,13 +52,23 @@ model Partido {
   fecha_hora      DateTime
   local_id        Int
   visita_id       Int
+  
+  // NUEVO: El partido pertenece a una categoría específica
+  categoria_id    Int
+  
   estado          String    @default("PROGRAMADO") 
   youtube_live_id String?   
   score_local     Int       @default(0)
   score_visita    Int       @default(0)
   
+  // NUEVO: Control de W.O. (No presentación para castigo de puntos)
+  forfeit_local   Boolean   @default(false)
+  forfeit_visita  Boolean   @default(false)
+  
   local           Club      @relation("Local", fields: [local_id], references: [id])
   visita          Club      @relation("Visita", fields: [visita_id], references: [id])
+  categoria       Categoria @relation(fields: [categoria_id], references: [id])
+  
   estadisticas    EstadisticaPartido[]
 }
 
@@ -55,4 +82,41 @@ model EstadisticaPartido {
   
   partido     Partido  @relation(fields: [partido_id], references: [id])
   jugador     Jugador  @relation(fields: [jugador_id], references: [id])
+  
+  // NUEVO: Evita que un jugador sea ingresado dos veces en las estadísticas del mismo partido
+  @@unique([partido_id, jugador_id])
+}
+
+// 2. NUEVO: Caché de la Tabla de Posiciones por Categoría
+model TablaPosicion {
+  id           Int       @id @default(autoincrement())
+  club_id      Int
+  categoria_id Int
+  
+  pj           Int       @default(0) // Partidos Jugados
+  pg           Int       @default(0) // Partidos Ganados
+  pp           Int       @default(0) // Partidos Perdidos
+  wo           Int       @default(0) // Walkovers (No presentación)
+  
+  puntos       Int       @default(0) // Puntaje en la tabla (3, 1, 0)
+  
+  pf           Int       @default(0) // Puntos a Favor
+  pc           Int       @default(0) // Puntos en Contra
+  dif          Int       @default(0) // Diferencia de puntos (pf - pc)
+  
+  club         Club      @relation(fields: [club_id], references: [id])
+  categoria    Categoria @relation(fields: [categoria_id], references: [id])
+
+  // NUEVO: Un club solo puede tener una fila de posiciones por cada categoría
+  @@unique([club_id, categoria_id])
+}
+
+// NUEVO: Almacenamiento de dispositivos para Notificaciones Push (PWA)
+model SuscripcionPush {
+  id          Int      @id @default(autoincrement())
+  endpoint    String   @unique // URL única que genera el celular del usuario
+  p256dh      String           // Llave de encriptación del dispositivo
+  auth        String           // Secreto de autenticación del dispositivo
+  
+  created_at  DateTime @default(now())
 }

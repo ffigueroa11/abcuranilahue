@@ -8,10 +8,10 @@ export default defineEventHandler(async (event) => {
 
   const partidos = await prisma.partido.findMany({
     where: {
-      estado: 'PROGRAMADO',
+      estado: 'FINALIZADO',
       categoria_id: categoriaId
     },
-    orderBy: { fecha_hora: 'asc' },
+    orderBy: { fecha_hora: 'desc' }, // 'desc' para que el partido más reciente salga primero
     take: 3,
     include: { local: true, visita: true }
   })
