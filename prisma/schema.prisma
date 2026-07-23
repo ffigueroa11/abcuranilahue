@@ -49,7 +49,7 @@ model Jugador {
 model Partido {
   id              Int       @id @default(autoincrement())
   jornada         Int       
-  fecha_hora      DateTime
+  fecha_hora     DateTime @db.Timestamp(0) // El (0) remueve los milisegundos y la zona horaria en PostgreSQL
   local_id        Int
   visita_id       Int
   

@@ -68,11 +68,13 @@
       <div v-if="categorias && categorias.length > 0" class="flex gap-3 mb-8 border-b border-zinc-800 pb-4 overflow-x-auto scrollbar-hide">
         <button 
           v-for="cat in categorias" :key="cat.id"
-          @click="selectedCategoriaId = Number(cat.id)"
-          :class="['px-6 py-2 rounded text-xs font-black uppercase tracking-wider transition-all whitespace-nowrap', {
-            'bg-zinc-800 text-zinc-100 border-l-2 border-amber-500 shadow-md': selectedCategoriaId === Number(cat.id),
-            'bg-transparent hover:bg-zinc-900 text-zinc-500 hover:text-zinc-300': selectedCategoriaId !== Number(cat.id)
-          }]"
+          @click="selectedCategoriaId = cat.id"
+          :class="[
+            'px-6 py-2 rounded text-xs font-black uppercase tracking-wider transition-all whitespace-nowrap',
+            selectedCategoriaId === cat.id 
+              ? 'bg-zinc-800 text-zinc-100 border-l-2 border-amber-500 shadow-md' 
+              : 'bg-transparent hover:bg-zinc-900 text-zinc-500 hover:text-zinc-300'
+          ]"
         >
           {{ cat.nombre }}
         </button>
@@ -195,8 +197,8 @@
           <div v-else-if="proximosPartidos && proximosPartidos.length > 0" class="space-y-4">
             <div v-for="partido in proximosPartidos" :key="partido.id" class="bg-zinc-950/50 border border-zinc-800 rounded-lg p-5 hover:border-zinc-700 transition-colors">
               <div class="flex justify-between items-center text-[10px] font-black uppercase tracking-widest mb-4">
-                <span class="text-amber-500">{{ new Date(partido.fecha_hora).toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' }) }} HRS</span>
-                <span class="text-zinc-600">{{ new Date(partido.fecha_hora).toLocaleDateString('es-CL', { weekday: 'short', day: 'numeric', month: 'short' }) }}</span>
+                <span class="text-amber-500">{{ formatHora(partido.fecha_hora) }} HRS</span>
+                <span class="text-zinc-600">{{ formatFecha(partido.fecha_hora) }}</span>
               </div>
               <div class="flex justify-between items-center">
                 <div class="flex items-center gap-3 w-2/5">
@@ -225,32 +227,73 @@
 
       </div>
     </section>
+
+    <!-- Sección de Últimos Videos / Transmisiones -->
+    <section class="max-w-[1400px] mx-auto px-4 py-16 border-t border-zinc-900">
+      <div class="flex justify-between items-end mb-8">
+        <div>
+          <span class="text-[10px] text-red-500 font-black tracking-widest uppercase block mb-1">Streaming & Multimedia</span>
+          <h2 class="text-2xl md:text-3xl font-black uppercase tracking-tight text-zinc-100 flex items-center gap-2">
+            <span class="w-2 h-6 bg-red-800 rounded-sm"></span>
+            Partidos y Reseñas en Video
+          </h2>
+        </div>
+        <NuxtLink to="/transmisiones" class="text-xs font-black uppercase tracking-wider text-amber-500 hover:text-amber-400 transition-colors flex items-center gap-1">
+          Ver todos los videos &rarr;
+        </NuxtLink>
+      </div>
+
+      <!-- Grilla de 3 Videos -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div 
+          v-for="video in videosHome" 
+          :key="video.id" 
+          class="bg-zinc-950 border border-zinc-800/80 rounded-xl overflow-hidden hover:border-zinc-700 transition-all shadow-lg flex flex-col group"
+        >
+          <!-- Reproductor Mini de YouTube -->
+          <div class="relative w-full bg-black" style="padding-top: 56.25%;">
+            <iframe 
+              class="absolute top-0 left-0 w-full h-full" 
+              :src="`https://www.youtube.com/embed/${video.youtubeId}?rel=0`" 
+              frameborder="0" 
+              allowfullscreen
+            ></iframe>
+          </div>
+
+          <!-- Información del video -->
+          <div class="p-5 flex flex-col justify-between flex-grow">
+            <div>
+              <span class="text-[10px] text-amber-500 font-black tracking-widest uppercase block mb-1">
+                {{ video.categoria }}
+              </span>
+              <h3 class="text-zinc-100 font-bold text-sm sm:text-base leading-snug group-hover:text-amber-400 transition-colors">
+                {{ video.titulo }}
+              </h3>
+            </div>
+            <div class="mt-4 pt-4 border-t border-zinc-900 flex justify-between items-center text-xs text-zinc-500 font-medium">
+              <span>{{ video.fecha }}</span>
+              <span class="text-zinc-400 font-bold">YouTube</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 </template>
 
 <script setup lang="ts">
-// Variables de estado
-const selectedCategoriaId = ref<number | null>(null)
-
-// 1. Cargar Clubes y Partido en Vivo
+// 1. Cargar Clubes y Partido en Vivo (No bloqueantes)
 const { data: clubes, pending: pendingClubes } = useFetch('/api/clubes')
 const { data: partidoEnVivo } = useFetch('/api/partidos/en-vivo')
 
-// 2. Cargar Categorías
-const { data: categorias } = useFetch('/api/categorias')
+// 2. Cargar Categorías (Usamos await para que la página espere a tener la lista antes de dibujarse)
+const { data: categorias } = await useFetch('/api/categorias')
 
-// Al terminar de cargar las categorías, buscamos "TODO COMPETIDOR" por defecto
-watch(categorias, (nuevasCategorias) => {
-  if (nuevasCategorias && nuevasCategorias.length > 0 && !selectedCategoriaId.value) {
-    // Busca la categoría exacta (ignorando mayúsculas por seguridad)
-    const categoriaDefault = nuevasCategorias.find(c => c.nombre.toUpperCase() === 'TODO COMPETIDOR')
-    
-    // Si la encuentra, selecciona su ID. Si por algún motivo no existe, selecciona la primera.
-    selectedCategoriaId.value = categoriaDefault ? categoriaDefault.id : nuevasCategorias[0].id
-  }
-}, { immediate: true })
+// 3. Inicializamos el ID seleccionado directamente (Adiós al watch)
+const categoriaDefault = categorias.value?.find(c => c.nombre.toUpperCase() === 'TODO COMPETIDOR')
+const selectedCategoriaId = ref<number | null>(categoriaDefault ? categoriaDefault.id : (categorias.value?.[0]?.id || null))
 
-// 3. Cargas Reactivas (Se vuelven a ejecutar solas al cambiar selectedCategoriaId)
+// 4. Cargas Reactivas (Nuxt 3 detecta automáticamente si selectedCategoriaId cambia y vuelve a llamar a la API)
 const { data: posiciones, pending: pendingPos } = useFetch('/api/posiciones', {
   query: { categoriaId: selectedCategoriaId }
 })
@@ -262,4 +305,46 @@ const { data: proximosPartidos, pending: pendingPartidos } = useFetch('/api/part
 const { data: ultimosPartidos, pending: pendingUltimos } = useFetch('/api/partidos/ultimos', {
   query: { categoriaId: selectedCategoriaId }
 })
+
+// Función para extraer la hora exacta sin conversiones
+const formatHora = (fecha: string | Date) => {
+  // Si viene como '2026-07-24T19:00:00' toma solo la parte de la hora
+  const fechaStr = new Date(fecha).toISOString().split('T')[1];
+  return fechaStr.substring(0, 5); // Retorna "19:00"
+}
+
+// Función para extraer la fecha exacta sin conversiones
+const formatFecha = (fecha: string | Date) => {
+  const dateObj = new Date(fecha);
+  const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+  const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+  
+  // getUTC methods evitan que el navegador aplique su propia zona horaria local
+  return `${dias[dateObj.getUTCDay()]} ${dateObj.getUTCDate()} de ${meses[dateObj.getUTCMonth()]}`;
+}
+
+// Lista de los 3 videos destacados para la página principal
+const videosHome = ref([
+  {
+    id: 1,
+    titulo: 'HUILLINES versus COLICO SUR',
+    categoria: 'Categoría Senior',
+    fecha: '17 de Julio, 2026',
+    youtubeId: 'yLrsLY7rSHI' // Reemplaza con el ID del video de YouTube
+  },
+  {
+    id: 2,
+    titulo: 'C.D. NAVIDAD versus HUILLINES',
+    categoria: 'Categoría Todo Competidor',
+    fecha: '11 de Julio, 2026',
+    youtubeId: 'HYpdnOggD8U' // Reemplaza con el ID del video de YouTube
+  },
+  {
+    id: 3,
+    titulo: 'SAN PATRICIO versus C.D. NAVIDAD',
+    categoria: 'Categoría Senior',
+    fecha: '17 de Julio, 2026',
+    youtubeId: 'LyKNFcFESpg' // Reemplaza con el ID del video de YouTube
+  }
+])
 </script>
