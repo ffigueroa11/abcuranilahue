@@ -128,4 +128,5 @@ const isMobileMenuOpen = ref(false);
       </div>
     </footer>
   </div>
+  <InstallPwa/>
 </template>
