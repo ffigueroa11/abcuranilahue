@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Hero Section -->
-    <section class="relative max-w-[1400px] mx-auto px-4 py-20 lg:py-28 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+    <section class="relative max-w-[1400px] mx-auto px-4 py-20 lg:py-22 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
       <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
         <div class="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] bg-red-900/20 blur-[120px] rounded-full"></div>
         <div class="absolute top-[20%] -right-[10%] w-[50%] h-[50%] bg-blue-900/10 blur-[120px] rounded-full"></div>
@@ -61,10 +61,8 @@
       </div>
     </section>
 
-    <!-- Match Center Dinámico -->
-    <section class="max-w-[1400px] mx-auto px-4 py-16">
-      
-      <!-- Banner Próxima Fecha -->
+    <section class="max-w-[1400px] mx-auto px-2 py-4">
+    <!-- Banner Próxima Fecha -->
       <div v-if="calendarioGeneral && calendarioGeneral.length > 0" class="max-w-[1200px] mx-auto mb-12">
         <div class="bg-gradient-to-r from-blue-900/80 via-blue-800/80 to-blue-700/80 backdrop-blur-lg border border-blue-600/50 rounded-2xl p-8 shadow-[0_10px_40px_rgba(29,78,216,0.3)]">
           <div class="flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
@@ -86,6 +84,12 @@
           </div>
         </div>
       </div>
+    </section>
+
+    <!-- Match Center Dinámico -->
+    <section class="max-w-[1400px] mx-auto px-4 py-8">
+      
+      
 
       <!-- Pestañas de Categorías -->
       <div v-if="categorias && categorias.length > 0" class="mb-8">
