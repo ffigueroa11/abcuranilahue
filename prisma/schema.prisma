@@ -29,13 +29,14 @@ model Club {
   
   // NUEVO: Relación a la tabla de posiciones
   posiciones  TablaPosicion[]
+  usuario     Usuario?  
 }
 
 model Jugador {
   id           Int                  @id @default(autoincrement())
   club_id      Int
   nombre       String
-  numero       Int
+  numero       Int?
   posicion     String?
   activo       Boolean              @default(true)
   
@@ -44,6 +45,8 @@ model Jugador {
   
   // NUEVO: Un jugador puede estar inscrito en 1 o más categorías
   categorias   Categoria[]
+  rut          String?              @unique // RUT del jugador, si aplica
+  fecha_nacimiento DateTime?          // Fecha de nacimiento del jugador, si aplica
 }
 
 model Partido {
@@ -119,4 +122,20 @@ model SuscripcionPush {
   auth        String           // Secreto de autenticación del dispositivo
   
   created_at  DateTime @default(now())
+}
+
+// NUEVO: Sistema de Usuarios para la Intranet
+model Usuario {
+  id            Int      @id @default(autoincrement())
+  email         String   @unique
+  password_hash String   // Contraseña encriptada
+  nombre        String
+  rol           String   @default("ADMIN") // Ej: "ADMIN" (Asociación) o "CLUB" (Delegado)
+  
+  // Opcional: Si el usuario es un delegado, se enlaza a su club
+  club_id       Int?     @unique
+  club          Club?    @relation(fields: [club_id], references: [id])
+  
+  activo        Boolean  @default(true)
+  created_at    DateTime @default(now())
 }
