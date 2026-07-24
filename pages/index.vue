@@ -149,7 +149,7 @@
               <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-800 via-zinc-800 to-blue-700 opacity-50"></div>
               
               <div class="text-[10px] text-zinc-500 font-black tracking-widest text-center uppercase mb-4">
-                Finalizado • {{ new Date(partido.fecha_hora).toLocaleDateString('es-CL', { day: 'numeric', month: 'short', year: 'numeric' }) }}
+                Finalizado • {{ formatFechaCorta(partido.fecha_hora) }}
               </div>
               
               <div class="flex justify-between items-center mb-1">
@@ -321,6 +321,16 @@ const formatFecha = (fecha: string | Date) => {
   
   // getUTC methods evitan que el navegador aplique su propia zona horaria local
   return `${dias[dateObj.getUTCDay()]} ${dateObj.getUTCDate()} de ${meses[dateObj.getUTCMonth()]}`;
+}
+
+// Función para formato de fecha corta, consistente en SSR y cliente
+const formatFechaCorta = (fecha: string | Date) => {
+  const dateObj = new Date(fecha);
+  // Nombres de meses cortos en español para consistencia
+  const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+  
+  // Usar métodos UTC para evitar inconsistencias de zona horaria
+  return `${dateObj.getUTCDate()} ${meses[dateObj.getUTCMonth()]}, ${dateObj.getUTCFullYear()}`;
 }
 
 // Lista de los 3 videos destacados para la página principal
