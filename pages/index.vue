@@ -144,6 +144,7 @@
             <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-red-800"></div>
           </div>
 
+          <!-- REEMPLAZA DESDE AQUÍ EL BUCLE DE RESULTADOS -->
           <div v-else-if="ultimosPartidos && ultimosPartidos.length > 0" class="space-y-4">
             <div v-for="partido in ultimosPartidos" :key="partido.id" class="bg-zinc-950/50 border border-zinc-800 rounded-lg p-5 relative overflow-hidden group hover:border-zinc-700 transition-colors">
               <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-800 via-zinc-800 to-blue-700 opacity-50"></div>
@@ -152,31 +153,46 @@
                 Finalizado • {{ formatFechaCorta(partido.fecha_hora) }}
               </div>
               
-              <div class="flex justify-between items-center mb-1">
-                <div class="flex flex-col items-center gap-2 w-1/3">
-                  <div class="w-10 h-10 bg-zinc-800 border-2 border-red-900/50 rounded-full flex items-center justify-center overflow-hidden">
-                    <img v-if="partido.local.logo_url" :src="partido.local.logo_url" class="w-full h-full object-cover p-1" />
-                    <span v-else class="text-xs font-bold text-zinc-500">{{ partido.local.nombre.charAt(0) }}</span>
+              <!-- ESTRUCTURA HORIZONTAL DE TRES COLUMNAS -->
+              <div class="flex items-center justify-between gap-2">
+                
+                <!-- Equipo Local (Alineado a la derecha) -->
+                <div class="flex items-center justify-end gap-2 flex-1 text-right">
+                  <span class="text-zinc-300 font-bold text-xs uppercase truncate max-w-[90px] sm:max-w-[130px]">
+                    {{ partido.local.nombre }}
+                  </span>
+                  <div class="w-8 h-8 bg-zinc-800 border border-red-900/50 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0">
+                    <img v-if="partido.local.logo_url" :src="partido.local.logo_url" class="w-full h-full object-cover p-0.5" />
+                    <span v-else class="text-[10px] font-bold text-zinc-500">{{ partido.local.nombre.charAt(0) }}</span>
                   </div>
-                  <span class="font-bold text-xs text-zinc-300 text-center truncate w-full">{{ partido.local.nombre }}</span>
                 </div>
                 
-                <div class="flex flex-col items-center w-1/3">
-                  <div class="text-3xl font-black tracking-tighter text-zinc-100">
-                    {{ partido.score_local }} <span class="text-zinc-700">-</span> {{ partido.score_visita }}
-                  </div>
+                <!-- Marcador Central Estilo Tablero -->
+                <div class="flex items-center gap-2 bg-zinc-900 border border-zinc-800 px-3 py-1.5 rounded-lg flex-shrink-0 shadow-inner">
+                  <span class="text-base sm:text-lg font-black text-amber-500">
+                    {{ partido.score_local }}
+                  </span>
+                  <span class="text-zinc-600 font-bold">-</span>
+                  <span class="text-base sm:text-lg font-black text-zinc-100">
+                    {{ partido.score_visita }}
+                  </span>
                 </div>
                 
-                <div class="flex flex-col items-center gap-2 w-1/3">
-                  <div class="w-10 h-10 bg-zinc-800 border-2 border-blue-800/50 rounded-full flex items-center justify-center overflow-hidden">
-                    <img v-if="partido.visita.logo_url" :src="partido.visita.logo_url" class="w-full h-full object-cover p-1" />
-                    <span v-else class="text-xs font-bold text-zinc-500">{{ partido.visita.nombre.charAt(0) }}</span>
+                <!-- Equipo Visitante (Alineado a la izquierda) -->
+                <div class="flex items-center justify-start gap-2 flex-1 text-left">
+                  <div class="w-8 h-8 bg-zinc-800 border border-blue-800/50 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0">
+                    <img v-if="partido.visita.logo_url" :src="partido.visita.logo_url" class="w-full h-full object-cover p-0.5" />
+                    <span v-else class="text-[10px] font-bold text-zinc-500">{{ partido.visita.nombre.charAt(0) }}</span>
                   </div>
-                  <span class="font-bold text-xs text-zinc-300 text-center truncate w-full">{{ partido.visita.nombre }}</span>
+                  <span class="text-zinc-300 font-bold text-xs uppercase truncate max-w-[90px] sm:max-w-[130px]">
+                    {{ partido.visita.nombre }}
+                  </span>
                 </div>
+
               </div>
             </div>
           </div>
+          <!-- HASTA AQUÍ -->
 
           <div v-else class="text-center py-8 text-zinc-600 text-xs font-bold uppercase tracking-widest">
             Sin resultados aún
