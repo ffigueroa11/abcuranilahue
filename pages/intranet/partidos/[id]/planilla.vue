@@ -268,7 +268,7 @@ const guardarPlanilla = async (finalizar: boolean) => {
     })
 
     if (finalizar) {
-      successMensaje.value = '¡Partido finalizado y guardado con éxito! Redirigiendo...'
+      successMensaje.value = '¡Partido finalizado y guardado con éxito!'
       
     } else {
       successMensaje.value = '¡Progreso guardado correctamente!'
