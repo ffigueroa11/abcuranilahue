@@ -26,7 +26,7 @@ const isMobileMenuOpen = ref(false);
             <div class="h-6 w-px bg-zinc-800 mx-2"></div>
             
             <button class="bg-gradient-to-r from-red-900 to-red-800 hover:from-red-800 hover:to-red-700 border border-red-700 text-white px-6 py-2.5 rounded shadow-[0_0_15px_rgba(139,0,0,0.4)] font-black text-xs uppercase transition-all">
-              Intranet Clubes
+              Intranet
             </button>
           </div>
 
@@ -54,7 +54,7 @@ const isMobileMenuOpen = ref(false);
           <!-- <NuxtLink to="/noticias" @click="isMobileMenuOpen = false" class="text-zinc-100 hover:text-amber-500 transition-colors">Noticias</NuxtLink> -->
           <NuxtLink to="/transmisiones" @click="isMobileMenuOpen = false" exact-active-class="text-amber-500" class="text-zinc-100 hover:text-amber-500 transition-colors">Transmisiones</NuxtLink>
           <button class="mt-8 bg-gradient-to-r from-red-900 to-red-800 border border-red-700 text-white px-8 py-3 rounded shadow-[0_0_15px_rgba(139,0,0,0.4)] font-black text-sm uppercase">
-            Intranet Clubes
+            Intranet
           </button>
         </div>
       </div>

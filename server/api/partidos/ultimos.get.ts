@@ -8,12 +8,16 @@ export default defineEventHandler(async (event) => {
 
   const partidos = await prisma.partido.findMany({
     where: {
-      estado: 'FINALIZADO',
+      estado: 'FINALIZADO', // o 'PROGRAMADO' dependiendo del archivo
       categoria_id: categoriaId
     },
-    orderBy: { fecha_hora: 'desc' }, // 'desc' para que el partido más reciente salga primero
+    orderBy: { fecha_hora: 'desc' }, 
     take: 3,
-    include: { local: true, visita: true }
+    include: { 
+      local: true, 
+      visita: true,
+      categoria: true // <--- ESTA ES LA LÍNEA QUE DEBES AGREGAR
+    }
   })
   
   return partidos

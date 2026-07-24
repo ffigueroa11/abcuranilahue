@@ -13,7 +13,11 @@ export default defineEventHandler(async (event) => {
     },
     orderBy: { fecha_hora: 'asc' },
     take: 3,
-    include: { local: true, visita: true }
+    include: { 
+      local: true, 
+      visita: true,
+      categoria: true 
+    }
   })
   
   return partidos
