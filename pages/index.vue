@@ -88,9 +88,6 @@
 
     <!-- Match Center Dinámico -->
     <section class="max-w-[1400px] mx-auto px-4 py-8">
-      
-      
-
       <!-- Pestañas de Categorías -->
       <div v-if="categorias && categorias.length > 0" class="mb-8">
         <!-- Dropdown para Móviles (visible hasta el breakpoint 'sm') -->
@@ -140,14 +137,12 @@
           </div>
 
           <div v-else-if="posiciones && posiciones.length > 0" class="overflow-x-auto scrollbar-hide -mx-2 px-2">
-            <!-- Eliminamos el min-w-[400px] para que no se desborde -->
             <table class="w-full text-sm">
               <thead class="text-[9px] sm:text-[10px] text-zinc-500 uppercase tracking-widest border-b border-zinc-800">
                 <tr>
                   <th class="text-left font-black pb-3 w-6 sm:w-8">POS</th>
                   <th class="text-left font-black pb-3">EQUIPO</th>
                   <th class="text-center font-black pb-3 w-6 sm:w-8">PJ</th>
-                  <!-- Ocultamos PG, PP y DIF en celulares con "hidden sm:table-cell" -->
                   <th class="text-center font-black pb-3 w-8 hidden sm:table-cell">PG</th>
                   <th class="text-center font-black pb-3 w-8 hidden sm:table-cell">PP</th>
                   <th class="text-center font-black pb-3 w-10">DIF</th>
@@ -168,7 +163,6 @@
 
                   <td class="py-2 sm:py-3 text-center text-zinc-400 text-xs">{{ pos.pj }}</td>
                   
-                  <!-- Ocultamos PG, PP y DIF en celulares con "hidden sm:table-cell" -->
                   <td class="py-2 sm:py-3 text-center text-zinc-400 text-xs hidden sm:table-cell">{{ pos.pg }}</td>
                   <td class="py-2 sm:py-3 text-center text-zinc-400 text-xs hidden sm:table-cell">{{ pos.pp }}</td>
                   <td :class="['py-2 sm:py-3 text-center text-xs font-medium', pos.dif > 0 ? 'text-green-500/80' : (pos.dif < 0 ? 'text-red-500/80' : 'text-zinc-500')]">
@@ -200,7 +194,6 @@
             <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-red-800"></div>
           </div>
 
-          <!-- REEMPLAZA DESDE AQUÍ EL BUCLE DE RESULTADOS -->
           <div v-else-if="ultimosPartidos && ultimosPartidos.length > 0" class="space-y-4">
             <div v-for="partido in ultimosPartidos" :key="partido.id" class="bg-zinc-950/50 border border-zinc-800 rounded-lg p-4 sm:p-5 relative overflow-hidden group hover:border-zinc-700 transition-colors">
               <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-800 via-zinc-800 to-blue-700 opacity-50"></div>
@@ -209,7 +202,6 @@
                 Finalizado • {{ formatFechaCorta(partido.fecha_hora) }}
               </div>
               
-              <!-- Estructura responsiva: vertical en móvil y horizontal ordenada en pantallas grandes -->
               <div class="flex items-center justify-between gap-2">
                 
                 <!-- Equipo Local -->
@@ -248,7 +240,6 @@
               </div>
             </div>
           </div>
-          <!-- HASTA AQUÍ -->
 
           <div v-else class="text-center py-8 text-zinc-600 text-xs font-bold uppercase tracking-widest">
             Sin resultados aún
@@ -298,6 +289,135 @@
           <div v-else class="text-center py-8 text-zinc-600 text-xs font-bold uppercase tracking-widest">
             Sin partidos programados
           </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECCIÓN NUEVA: PREVIEW DE RANKING -->
+    <section class="max-w-[1400px] mx-auto px-4 py-16 border-t border-zinc-900 relative overflow-hidden">
+      <!-- Decoración de fondo -->
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-amber-900/10 blur-[100px] rounded-full pointer-events-none"></div>
+
+      <div class="relative z-10">
+        <!-- Encabezado de Sección -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-amber-600/30 bg-amber-900/10 text-amber-500 text-xs font-black tracking-widest uppercase mb-3">
+              <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Rendimiento Individual
+            </div>
+            <h2 class="text-3xl md:text-4xl font-black uppercase tracking-tight text-white">Líderes de la Temporada</h2>
+          </div>
+
+          <!-- Selector de Categoría (Versión Mini) -->
+          <div class="flex items-center gap-2 bg-zinc-900 border border-zinc-800 p-1 rounded-xl">
+            <span class="text-[10px] font-black uppercase tracking-widest text-zinc-500 pl-3">Serie:</span>
+            <select 
+              v-model="categoriaRanking" 
+              class="bg-zinc-950 text-amber-500 text-xs font-black uppercase tracking-wider px-3 py-2 rounded-lg border border-zinc-800 focus:outline-none focus:border-amber-500"
+            >
+              <option v-for="cat in rankingPreview?.categorias" :key="cat.id" :value="cat.id">
+                {{ cat.nombre }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Cargador -->
+        <div v-if="pendingRanking" class="flex justify-center py-12">
+          <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-amber-500"></div>
+        </div>
+
+        <!-- Grid de Top 5 -->
+        <div v-else class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          
+          <!-- Columna: Top Anotadores -->
+          <div class="bg-zinc-900/40 border border-zinc-800/80 rounded-2xl p-6 backdrop-blur-sm">
+            <h3 class="text-white font-black uppercase tracking-wider mb-6 flex items-center gap-2">
+              <svg class="w-5 h-5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+              Top 5 Goleadores
+            </h3>
+            
+            <div v-if="rankingPreview?.goleadores && rankingPreview.goleadores.length > 0" class="flex flex-col gap-3">
+              <div 
+                v-for="(item, index) in rankingPreview.goleadores.slice(0, 5)" 
+                :key="'gol-'+item.jugadorId"
+                class="flex items-center justify-between bg-zinc-950/50 border border-zinc-800/50 p-3 rounded-xl hover:border-amber-900/50 transition-colors"
+              >
+                <div class="flex items-center gap-4">
+                  <span 
+                    class="flex items-center justify-center w-8 h-8 rounded-lg text-xs font-black"
+                    :class="index === 0 ? 'bg-amber-500 text-zinc-900' : index === 1 ? 'bg-zinc-300 text-zinc-900' : index === 2 ? 'bg-amber-700 text-white' : 'bg-zinc-900 text-zinc-500'"
+                  >
+                    {{ index + 1 }}
+                  </span>
+                  <div>
+                    <p class="text-zinc-100 font-bold text-sm uppercase">{{ item.nombre }}</p>
+                    <p class="text-zinc-500 text-[10px] font-black uppercase tracking-widest">{{ item.clubNombre }}</p>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <span class="block text-xl font-black text-amber-500">{{ item.puntos }}</span>
+                  <span class="block text-[9px] font-bold text-zinc-500 uppercase tracking-widest">Puntos</span>
+                </div>
+              </div>
+            </div>
+            <div v-else class="text-center py-8 text-zinc-600 text-xs font-bold uppercase tracking-widest">
+              Sin datos registrados
+            </div>
+          </div>
+
+          <!-- Columna: Top Triples -->
+          <div class="bg-zinc-900/40 border border-zinc-800/80 rounded-2xl p-6 backdrop-blur-sm">
+            <h3 class="text-white font-black uppercase tracking-wider mb-6 flex items-center gap-2">
+              <svg class="w-5 h-5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
+              Top 5 Triples
+            </h3>
+            
+            <div v-if="rankingPreview?.triples && rankingPreview.triples.length > 0" class="flex flex-col gap-3">
+              <div 
+                v-for="(item, index) in rankingPreview.triples.slice(0, 5)" 
+                :key="'trip-'+item.jugadorId"
+                class="flex items-center justify-between bg-zinc-950/50 border border-zinc-800/50 p-3 rounded-xl hover:border-amber-900/50 transition-colors"
+              >
+                <div class="flex items-center gap-4">
+                  <span 
+                    class="flex items-center justify-center w-8 h-8 rounded-lg text-xs font-black"
+                    :class="index === 0 ? 'bg-amber-500 text-zinc-900' : index === 1 ? 'bg-zinc-300 text-zinc-900' : index === 2 ? 'bg-amber-700 text-white' : 'bg-zinc-900 text-zinc-500'"
+                  >
+                    {{ index + 1 }}
+                  </span>
+                  <div>
+                    <p class="text-zinc-100 font-bold text-sm uppercase">{{ item.nombre }}</p>
+                    <p class="text-zinc-500 text-[10px] font-black uppercase tracking-widest">{{ item.clubNombre }}</p>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <span class="block text-xl font-black text-amber-500">{{ item.triples }}</span>
+                  <span class="block text-[9px] font-bold text-zinc-500 uppercase tracking-widest">Triples</span>
+                </div>
+              </div>
+            </div>
+            <div v-else class="text-center py-8 text-zinc-600 text-xs font-bold uppercase tracking-widest">
+              Sin datos registrados
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Botón Ver Todo (Puente a ranking.vue con categoría seleccionada) -->
+        <div class="mt-10 flex justify-center">
+          <NuxtLink 
+            :to="`/ranking?categoria_id=${categoriaRanking}`" 
+            class="group relative inline-flex items-center justify-center px-8 py-4 font-black text-sm text-white uppercase tracking-widest transition-all duration-200 bg-zinc-900 border border-zinc-700 rounded-xl hover:border-amber-500 hover:bg-zinc-800 overflow-hidden"
+          >
+            <div class="absolute inset-0 w-full h-full -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-amber-500/10 to-transparent"></div>
+            
+            <span class="relative flex items-center gap-3">
+              Ver Ranking Completo
+              <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </span>
+          </NuxtLink>
         </div>
 
       </div>
@@ -357,28 +477,24 @@
 </template>
 
 <script setup lang="ts">
-// 1. Cargar Clubes y Partido en Vivo (No bloqueantes)
+// 1. Cargar Clubes y Partido en Vivo
 const { data: clubes, pending: pendingClubes } = useFetch('/api/clubes')
 const { data: partidoEnVivo } = useFetch('/api/partidos/en-vivo')
-
-// Carga el calendario general para mostrar el banner de "Próximos Partidos" si es necesario
 const { data: calendarioGeneral } = useFetch('/api/partidos/calendario')
 
-// 2. Cargar Categorías (Usamos await para que la página espere a tener la lista antes de dibujarse)
+// 2. Cargar Categorías
 const { data: categorias } = await useFetch('/api/categorias')
 
-// 3. Inicializamos el ID seleccionado directamente (Adiós al watch)
 const categoriaDefault = categorias.value?.find(c => c.nombre.toUpperCase() === 'TODO COMPETIDOR')
 const selectedCategoriaId = ref<number | null>(categoriaDefault ? categoriaDefault.id : (categorias.value?.[0]?.id || null))
 
-// Computed para obtener el nombre de la categoría actual
 const selectedCategoriaNombre = computed(() => {
   if (!categorias.value || !selectedCategoriaId.value) return '';
   const categoria = categorias.value.find(c => c.id === selectedCategoriaId.value);
   return categoria ? categoria.nombre : '';
 });
 
-// 4. Cargas Reactivas (Nuxt 3 detecta automáticamente si selectedCategoriaId cambia y vuelve a llamar a la API)
+// 3. Cargas Reactivas Match Center
 const { data: posiciones, pending: pendingPos } = useFetch('/api/posiciones', {
   query: { categoriaId: selectedCategoriaId }
 })
@@ -391,55 +507,87 @@ const { data: ultimosPartidos, pending: pendingUltimos } = useFetch('/api/partid
   query: { categoriaId: selectedCategoriaId }
 })
 
-// Función para extraer la hora exacta sin conversiones
+// ==========================================
+// RANKING PREVIEW (Corregido sin valores nulos iniciales)
+// ==========================================
+
+// 1. Buscamos la categoría por defecto igual que en el Match Center
+const catDefaultRanking = categorias.value?.find(c => c.nombre.toUpperCase() === 'TODO COMPETIDOR')
+const categoriaRanking = ref<number | null>(catDefaultRanking ? catDefaultRanking.id : (categorias.value?.[0]?.id || null))
+
+// 2. Consultamos directamente con un ID válido desde el SSR
+const { data: rankingPreview, pending: pendingRanking } = await useAsyncData<any>(
+  'home-ranking-preview',
+  () => {
+    const timestamp = Date.now()
+    return $fetch('/api/ranking', {
+      params: { 
+        categoria_id: categoriaRanking.value,
+        t: timestamp 
+      }
+    })
+  },
+  { 
+    watch: [categoriaRanking] 
+  }
+)
+
+// Autoseleccionamos la primera categoría si está vacía
+watchEffect(() => {
+  if (rankingPreview.value?.selectedCategoriaId && !categoriaRanking.value) {
+    categoriaRanking.value = rankingPreview.value.selectedCategoriaId
+  }
+})
+// ==========================================
+
+// Funciones de formato de fecha
 const formatHora = (fecha: string | Date) => {
-  // Si viene como '2026-07-24T19:00:00' toma solo la parte de la hora
   const fechaStr = new Date(fecha).toISOString().split('T')[1];
-  return fechaStr.substring(0, 5); // Retorna "19:00"
+  return fechaStr.substring(0, 5); 
 }
 
-// Función para extraer la fecha exacta sin conversiones
 const formatFecha = (fecha: string | Date) => {
   const dateObj = new Date(fecha);
   const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
   const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-  
-  // getUTC methods evitan que el navegador aplique su propia zona horaria local
   return `${dias[dateObj.getUTCDay()]} ${dateObj.getUTCDate()} de ${meses[dateObj.getUTCMonth()]}`;
 }
 
-// Función para formato de fecha corta, consistente en SSR y cliente
 const formatFechaCorta = (fecha: string | Date) => {
   const dateObj = new Date(fecha);
-  // Nombres de meses cortos en español para consistencia
   const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-  
-  // Usar métodos UTC para evitar inconsistencias de zona horaria
   return `${dateObj.getUTCDate()} ${meses[dateObj.getUTCMonth()]}, ${dateObj.getUTCFullYear()}`;
 }
 
-// Lista de los 3 videos destacados para la página principal
 const videosHome = ref([
   {
     id: 1,
     titulo: 'HUILLINES versus COLICO SUR',
     categoria: 'Categoría Senior',
     fecha: '17 de Julio, 2026',
-    youtubeId: 'yLrsLY7rSHI' // Reemplaza con el ID del video de YouTube
+    youtubeId: 'yLrsLY7rSHI' 
   },
   {
     id: 2,
     titulo: 'C.D. NAVIDAD versus HUILLINES',
     categoria: 'Categoría Todo Competidor',
     fecha: '11 de Julio, 2026',
-    youtubeId: 'HYpdnOggD8U' // Reemplaza con el ID del video de YouTube
+    youtubeId: 'HYpdnOggD8U' 
   },
   {
     id: 3,
     titulo: 'SAN PATRICIO versus C.D. NAVIDAD',
     categoria: 'Categoría Senior',
     fecha: '17 de Julio, 2026',
-    youtubeId: 'LyKNFcFESpg' // Reemplaza con el ID del video de YouTube
+    youtubeId: 'LyKNFcFESpg' 
   }
 ])
 </script>
+
+<style>
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+</style>

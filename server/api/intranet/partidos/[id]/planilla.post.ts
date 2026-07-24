@@ -104,6 +104,12 @@ export default defineEventHandler(async (event) => {
         ...(finalizar ? { estado: 'FINALIZADO' } : {})
       }
     })
+    
+  }, 
+  {
+    // AQUÍ ESTÁ LA SOLUCIÓN:
+    maxWait: 5000,  // 5 segundos máximo para intentar conectar con la BD
+    timeout: 20000  // 20 segundos máximo para terminar toda la operación (por defecto eran 5)
   })
 
   return { success: true, score_local: finalScoreLocal, score_visita: finalScoreVisita }

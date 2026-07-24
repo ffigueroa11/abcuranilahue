@@ -8,10 +8,16 @@ export default defineEventHandler(async (event) => {
     where: { id },
     include: {
       local: {
-        include: { jugadores: { orderBy: { nombre: 'asc' } } }
+        include: { jugadores: {
+             orderBy: { nombre: 'asc' },
+             include: { categorias: true }
+            } }
       },
       visita: {
-        include: { jugadores: { orderBy: { nombre: 'asc' } } }
+        include: { jugadores: {
+             orderBy: { nombre: 'asc' },
+             include: { categorias: true }
+            } }
       },
       categoria: true,
       estadisticas: true // Para precargar los datos si ya se guardaron antes

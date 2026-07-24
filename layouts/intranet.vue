@@ -50,6 +50,17 @@
           <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
           Fixture
         </NuxtLink>
+
+        <NuxtLink 
+          to="/intranet/ranking" 
+          class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold tracking-wide transition-all"
+          active-class="bg-amber-900/20 text-amber-500 border border-amber-900/50"
+          inactive-class="text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-200"
+          @click="isSidebarOpen = false"
+        >
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+          Ranking y Goleadores
+        </NuxtLink>
       </nav>
 
       <!-- Botón de Cerrar Sesión -->
