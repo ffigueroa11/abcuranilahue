@@ -33,6 +33,28 @@ export default defineNuxtConfig({
     workbox: {      
       globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
       maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
+      // Estrategia para actualizar la PWA de forma proactiva:
+      // Cuando hay una nueva versión, el Service Worker se activará inmediatamente
+      // y tomará el control de la página. Esto hará que el aviso de "nueva versión"
+      // aparezca sin que el usuario tenga que cerrar y volver a abrir la app.
+      skipWaiting: true,
+      clientsClaim: true,
+      runtimeCaching: [
+        {
+          // Estrategia para las peticiones a la API (posiciones, partidos, etc.)
+          // Usa StaleWhileRevalidate: muestra el contenido cacheado al instante
+          // y luego busca una nueva versión en segundo plano.
+          urlPattern: ({ url }) => url.pathname.startsWith('/api/'),
+          handler: 'StaleWhileRevalidate',
+          options: {
+            cacheName: 'api-data-cache',
+            expiration: {
+              maxEntries: 100, // Número máximo de respuestas a cachear
+              maxAgeSeconds: 60 * 60 * 24 // Cachear por 1 día (86400 segundos)
+            }
+          }
+        }
+      ]
     },
     client: {
       installPrompt: true,
