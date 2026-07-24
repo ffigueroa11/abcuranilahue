@@ -65,19 +65,35 @@
     <section class="max-w-[1400px] mx-auto px-4 py-16">
       
       <!-- Pestañas de Categorías -->
-      <div v-if="categorias && categorias.length > 0" class="flex gap-3 mb-8 border-b border-zinc-800 pb-4 overflow-x-auto scrollbar-hide">
-        <button 
-          v-for="cat in categorias" :key="cat.id"
-          @click="selectedCategoriaId = cat.id"
-          :class="[
-            'px-6 py-2 rounded text-xs font-black uppercase tracking-wider transition-all whitespace-nowrap',
-            selectedCategoriaId === cat.id 
-              ? 'bg-zinc-800 text-zinc-100 border-l-2 border-amber-500 shadow-md' 
-              : 'bg-transparent hover:bg-zinc-900 text-zinc-500 hover:text-zinc-300'
-          ]"
-        >
-          {{ cat.nombre }}
-        </button>
+      <div v-if="categorias && categorias.length > 0" class="mb-8">
+        <!-- Dropdown para Móviles (visible hasta el breakpoint 'sm') -->
+        <div class="sm:hidden relative">
+          <select 
+            v-model="selectedCategoriaId"
+            class="w-full appearance-none bg-zinc-800 border border-zinc-700 text-zinc-100 text-sm font-bold uppercase tracking-wider rounded-lg px-4 py-3 focus:outline-none focus:border-amber-500"
+          >
+            <option v-for="cat in categorias" :key="cat.id" :value="cat.id">
+              {{ cat.nombre }}
+            </option>
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-zinc-400">
+            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+          </div>
+        </div>
+
+        <!-- Pestañas para Desktop (oculto hasta el breakpoint 'sm') -->
+        <div class="hidden sm:flex gap-3 border-b border-zinc-800 pb-4 overflow-x-auto scrollbar-hide">
+          <button 
+            v-for="cat in categorias" :key="cat.id"
+            @click="selectedCategoriaId = cat.id"
+            :class="[
+              'px-6 py-2 rounded text-xs font-black uppercase tracking-wider transition-all whitespace-nowrap',
+              selectedCategoriaId === cat.id 
+                ? 'bg-zinc-800 text-zinc-100 border-l-2 border-amber-500 shadow-md' 
+                : 'bg-transparent hover:bg-zinc-900 text-zinc-500 hover:text-zinc-300'
+            ]"
+          >{{ cat.nombre }}</button>
+        </div>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
