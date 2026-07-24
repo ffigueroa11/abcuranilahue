@@ -127,6 +127,8 @@ const isMobileMenuOpen = ref(false);
         <p class="mt-2 sm:mt-0">Desarrollo Plataforma Deportiva</p>
       </div>
     </footer>
-  </div>
+  
   <InstallPwa/>
+  <PwaReloadPrompt/>
+  </div>
 </template>

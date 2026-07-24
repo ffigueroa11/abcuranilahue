@@ -153,38 +153,38 @@
                 Finalizado • {{ formatFechaCorta(partido.fecha_hora) }}
               </div>
               
-              <!-- Estructura con nombre bajo el ícono y marcador al centro -->
+              <!-- Estructura responsiva: vertical en móvil y horizontal ordenada en pantallas grandes -->
               <div class="flex items-center justify-between gap-2">
                 
-                <!-- Equipo Local (Icono arriba, nombre abajo) -->
+                <!-- Equipo Local -->
                 <div class="flex flex-col items-center text-center flex-1">
                   <div class="w-12 h-12 bg-zinc-800 border-2 border-red-900/60 rounded-full flex items-center justify-center overflow-hidden shadow-md mb-1.5 flex-shrink-0">
                     <img v-if="partido.local.logo_url" :src="partido.local.logo_url" class="w-full h-full object-cover p-0.5" />
                     <span v-else class="text-xs font-bold text-zinc-400">{{ partido.local.nombre.charAt(0) }}</span>
                   </div>
-                  <span class="text-zinc-300 font-bold text-[11px] sm:text-xs uppercase truncate w-full max-w-[110px]">
+                  <span class="text-zinc-300 font-bold text-[10px] sm:text-xs uppercase truncate w-full max-w-[100px] sm:max-w-[130px]">
                     {{ partido.local.nombre }}
                   </span>
                 </div>
                 
                 <!-- Marcador Central Estilo Tablero -->
-                <div class="flex items-center gap-2 bg-zinc-900 border border-zinc-800 px-3.5 py-2 rounded-xl flex-shrink-0 shadow-inner">
-                  <span class="text-lg sm:text-xl font-black text-amber-500">
+                <div class="flex items-center gap-1.5 sm:gap-2 bg-zinc-900 border border-zinc-800 px-3 py-2 rounded-xl flex-shrink-0 shadow-inner">
+                  <span class="text-base sm:text-xl font-black text-amber-500">
                     {{ partido.score_local }}
                   </span>
                   <span class="text-zinc-600 font-bold">-</span>
-                  <span class="text-lg sm:text-xl font-black text-zinc-100">
+                  <span class="text-base sm:text-xl font-black text-zinc-100">
                     {{ partido.score_visita }}
                   </span>
                 </div>
                 
-                <!-- Equipo Visitante (Icono arriba, nombre abajo) -->
+                <!-- Equipo Visitante -->
                 <div class="flex flex-col items-center text-center flex-1">
                   <div class="w-12 h-12 bg-zinc-800 border-2 border-blue-800/60 rounded-full flex items-center justify-center overflow-hidden shadow-md mb-1.5 flex-shrink-0">
                     <img v-if="partido.visita.logo_url" :src="partido.visita.logo_url" class="w-full h-full object-cover p-0.5" />
                     <span v-else class="text-xs font-bold text-zinc-400">{{ partido.visita.nombre.charAt(0) }}</span>
                   </div>
-                  <span class="text-zinc-300 font-bold text-[11px] sm:text-xs uppercase truncate w-full max-w-[110px]">
+                  <span class="text-zinc-300 font-bold text-[10px] sm:text-xs uppercase truncate w-full max-w-[100px] sm:max-w-[130px]">
                     {{ partido.visita.nombre }}
                   </span>
                 </div>
