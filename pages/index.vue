@@ -64,6 +64,29 @@
     <!-- Match Center Dinámico -->
     <section class="max-w-[1400px] mx-auto px-4 py-16">
       
+      <!-- Banner Próxima Fecha -->
+      <div v-if="calendarioGeneral && calendarioGeneral.length > 0" class="max-w-[1200px] mx-auto mb-12">
+        <div class="bg-gradient-to-r from-blue-900/80 via-blue-800/80 to-blue-700/80 backdrop-blur-lg border border-blue-600/50 rounded-2xl p-8 shadow-[0_10px_40px_rgba(29,78,216,0.3)]">
+          <div class="flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
+            <div class="flex items-center gap-4">
+              <div class="hidden md:block bg-blue-500/20 p-3 rounded-full border-2 border-blue-500/50">
+                <svg class="w-8 h-8 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+              </div>
+              <div>
+                <h3 class="text-xl font-black uppercase text-white tracking-wider">¡Hay Partidos Programados!</h3>
+                <p class="text-blue-200 font-medium">La próxima fecha del campeonato ya está disponible. Revisa el fixture completo.</p>
+              </div>
+            </div>
+            <NuxtLink 
+              to="/partidos" 
+              class="bg-white text-blue-900 font-black text-sm uppercase px-8 py-3 rounded-lg shadow-lg hover:bg-blue-100 transition-all transform hover:scale-105 flex-shrink-0"
+            >
+              Ver Fixture
+            </NuxtLink>
+          </div>
+        </div>
+      </div>
+
       <!-- Pestañas de Categorías -->
       <div v-if="categorias && categorias.length > 0" class="mb-8">
         <!-- Dropdown para Móviles (visible hasta el breakpoint 'sm') -->
@@ -333,6 +356,9 @@
 // 1. Cargar Clubes y Partido en Vivo (No bloqueantes)
 const { data: clubes, pending: pendingClubes } = useFetch('/api/clubes')
 const { data: partidoEnVivo } = useFetch('/api/partidos/en-vivo')
+
+// Carga el calendario general para mostrar el banner de "Próximos Partidos" si es necesario
+const { data: calendarioGeneral } = useFetch('/api/partidos/calendario')
 
 // 2. Cargar Categorías (Usamos await para que la página espere a tener la lista antes de dibujarse)
 const { data: categorias } = await useFetch('/api/categorias')

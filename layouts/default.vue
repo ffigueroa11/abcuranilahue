@@ -16,11 +16,11 @@ const isMobileMenuOpen = ref(false);
           
           <!-- Menú Desktop -->
           <div class="hidden lg:flex space-x-8 text-[13px] font-bold uppercase tracking-widest items-center">
-            <NuxtLink to="/" class="text-amber-500 border-b-2 border-amber-500 pb-1">Inicio</NuxtLink>
-            <NuxtLink to="/posiciones" class="text-zinc-400 hover:text-zinc-100 hover:border-b-2 hover:border-red-800 pb-1 transition-all">Posiciones</NuxtLink>
-            <NuxtLink to="/partidos" class="text-zinc-400 hover:text-zinc-100 hover:border-b-2 hover:border-blue-700 pb-1 transition-all">Partidos</NuxtLink>
-            <NuxtLink to="/equipos" class="text-zinc-400 hover:text-zinc-100 hover:border-b-2 hover:border-zinc-400 pb-1 transition-all">Equipos</NuxtLink>
-            <NuxtLink to="/transmisiones" class="text-zinc-400 hover:text-zinc-100 hover:border-b-2 hover:border-red-800 pb-1 transition-all">Transmisiones</NuxtLink>
+            <NuxtLink to="/" exact-active-class="text-amber-500 border-b-2 border-amber-500" class="text-zinc-400 hover:text-zinc-100 hover:border-b-2 hover:border-amber-500 pb-1 transition-all">Inicio</NuxtLink>
+            <NuxtLink to="/posiciones" exact-active-class="text-amber-500 border-b-2 border-amber-500" class="text-zinc-400 hover:text-zinc-100 hover:border-b-2 hover:border-red-800 pb-1 transition-all">Posiciones</NuxtLink>
+            <NuxtLink to="/partidos" exact-active-class="text-amber-500 border-b-2 border-amber-500" class="text-zinc-400 hover:text-zinc-100 hover:border-b-2 hover:border-blue-700 pb-1 transition-all">Partidos</NuxtLink>
+            <NuxtLink to="/equipos" exact-active-class="text-amber-500 border-b-2 border-amber-500" class="text-zinc-400 hover:text-zinc-100 hover:border-b-2 hover:border-zinc-400 pb-1 transition-all">Equipos</NuxtLink>
+            <NuxtLink to="/transmisiones" exact-active-class="text-amber-500 border-b-2 border-amber-500" class="text-zinc-400 hover:text-zinc-100 hover:border-b-2 hover:border-red-800 pb-1 transition-all">Transmisiones</NuxtLink>
             <!-- <NuxtLink to="/noticias" class="text-zinc-400 hover:text-zinc-100 hover:border-b-2 hover:border-zinc-400 pb-1 transition-all">Noticias</NuxtLink> -->
             
             <div class="h-6 w-px bg-zinc-800 mx-2"></div>
@@ -47,12 +47,12 @@ const isMobileMenuOpen = ref(false);
       <!-- Menú Móvil (desplegable) -->
       <div v-if="isMobileMenuOpen" class="lg:hidden bg-zinc-950/95 backdrop-blur-lg absolute top-0 left-0 w-full h-screen pt-24">
         <div class="flex flex-col items-center justify-center h-full space-y-8 text-lg font-bold uppercase tracking-widest -mt-24">
-          <NuxtLink to="/" @click="isMobileMenuOpen = false" class="text-zinc-100 hover:text-amber-500 transition-colors">Inicio</NuxtLink>
-          <NuxtLink to="/posiciones" @click="isMobileMenuOpen = false" class="text-zinc-100 hover:text-amber-500 transition-colors">Posiciones</NuxtLink>
-          <NuxtLink to="/partidos" @click="isMobileMenuOpen = false" class="text-zinc-100 hover:text-amber-500 transition-colors">Partidos</NuxtLink>
-          <NuxtLink to="/equipos" @click="isMobileMenuOpen = false" class="text-zinc-100 hover:text-amber-500 transition-colors">Equipos</NuxtLink>
+          <NuxtLink to="/" @click="isMobileMenuOpen = false" exact-active-class="text-amber-500" class="text-zinc-100 hover:text-amber-500 transition-colors">Inicio</NuxtLink>
+          <NuxtLink to="/posiciones" @click="isMobileMenuOpen = false" exact-active-class="text-amber-500" class="text-zinc-100 hover:text-amber-500 transition-colors">Posiciones</NuxtLink>
+          <NuxtLink to="/partidos" @click="isMobileMenuOpen = false" exact-active-class="text-amber-500" class="text-zinc-100 hover:text-amber-500 transition-colors">Partidos</NuxtLink>
+          <NuxtLink to="/equipos" @click="isMobileMenuOpen = false" exact-active-class="text-amber-500" class="text-zinc-100 hover:text-amber-500 transition-colors">Equipos</NuxtLink>
           <!-- <NuxtLink to="/noticias" @click="isMobileMenuOpen = false" class="text-zinc-100 hover:text-amber-500 transition-colors">Noticias</NuxtLink> -->
-          <NuxtLink to="/transmisiones" @click="isMobileMenuOpen = false" class="text-zinc-100 hover:text-amber-500 transition-colors">Transmisiones</NuxtLink>
+          <NuxtLink to="/transmisiones" @click="isMobileMenuOpen = false" exact-active-class="text-amber-500" class="text-zinc-100 hover:text-amber-500 transition-colors">Transmisiones</NuxtLink>
           <button class="mt-8 bg-gradient-to-r from-red-900 to-red-800 border border-red-700 text-white px-8 py-3 rounded shadow-[0_0_15px_rgba(139,0,0,0.4)] font-black text-sm uppercase">
             Intranet Clubes
           </button>
