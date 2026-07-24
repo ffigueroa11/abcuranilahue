@@ -75,13 +75,33 @@
         </div>
 
         <!-- Acciones -->
-        <div class="min-w-[140px] flex justify-end w-full lg:w-auto">
+        <div class="min-w-[140px] flex flex-col justify-center items-end w-full lg:w-auto gap-2">
           <NuxtLink 
             :to="`/intranet/partidos/${partido.id}/planilla`"
             class="w-full lg:w-auto text-center border border-zinc-700 hover:border-amber-500 text-zinc-300 hover:text-amber-500 px-4 py-2 rounded font-bold text-xs uppercase tracking-wider transition-colors"
           >
             {{ partido.estado === 'FINALIZADO' ? 'Ver Estadísticas' : 'Mesa de Control' }}
           </NuxtLink>
+
+          <!-- MARCA: Planilla Cuadrada (Suma = Total) -->
+          <div v-if="partido.planilla_cuadrada" class="flex justify-center lg:justify-end w-full">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-green-950/60 border border-green-900 text-green-500 text-[9px] font-black uppercase tracking-widest shadow-sm">
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+              </svg>
+              Planilla Cuadrada
+            </span>
+          </div>
+
+          <!-- MARCA: Faltan Datos (Finalizado pero suma no coincide) -->
+          <div v-else-if="partido.estado === 'FINALIZADO' && !partido.planilla_cuadrada" class="flex justify-center lg:justify-end w-full">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-red-950/60 border border-red-900 text-red-500 text-[9px] font-black uppercase tracking-widest shadow-sm animate-pulse">
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              Faltan Datos
+            </span>
+          </div>
         </div>
       </div>
     </div>
