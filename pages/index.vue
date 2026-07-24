@@ -94,35 +94,42 @@
           </div>
 
           <div v-else-if="posiciones && posiciones.length > 0" class="overflow-x-auto scrollbar-hide -mx-2 px-2">
-            <table class="w-full text-sm min-w-[400px]">
-              <thead class="text-[10px] text-zinc-500 uppercase tracking-widest border-b border-zinc-800">
+            <!-- Eliminamos el min-w-[400px] para que no se desborde -->
+            <table class="w-full text-sm">
+              <thead class="text-[9px] sm:text-[10px] text-zinc-500 uppercase tracking-widest border-b border-zinc-800">
                 <tr>
-                  <th class="text-left font-black pb-3 w-8">POS</th>
+                  <th class="text-left font-black pb-3 w-6 sm:w-8">POS</th>
                   <th class="text-left font-black pb-3">EQUIPO</th>
-                  <th class="text-center font-black pb-3 w-8">PJ</th>
-                  <th class="text-center font-black pb-3 w-8">PG</th>
-                  <th class="text-center font-black pb-3 w-8">PP</th>
-                  <th class="text-center font-black pb-3 w-10">DIF</th>
-                  <th class="text-center font-black pb-3 text-amber-500 w-10">PTS</th>
+                  <th class="text-center font-black pb-3 w-6 sm:w-8">PJ</th>
+                  <!-- Ocultamos PG, PP y DIF en celulares con "hidden sm:table-cell" -->
+                  <th class="text-center font-black pb-3 w-8 hidden sm:table-cell">PG</th>
+                  <th class="text-center font-black pb-3 w-8 hidden sm:table-cell">PP</th>
+                  <th class="text-center font-black pb-3 w-10 hidden sm:table-cell">DIF</th>
+                  <th class="text-center font-black pb-3 text-amber-500 w-8 sm:w-10">PTS</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-zinc-800/50">
                 <tr v-for="(pos, index) in posiciones" :key="pos.id" class="hover:bg-zinc-800/30 transition-colors group">
-                  <td :class="['py-3 font-black', index === 0 ? 'text-amber-500' : 'text-zinc-500']">{{ index + 1 }}</td>
-                  <td class="py-3 font-bold flex items-center gap-2 pr-4">
+                  <td :class="['py-2 sm:py-3 font-black text-xs sm:text-sm', index === 0 ? 'text-amber-500' : 'text-zinc-500']">{{ index + 1 }}</td>
+                  
+                  <td class="py-2 sm:py-3 font-bold flex items-center gap-2 pr-2 sm:pr-4">
                     <div class="w-6 h-6 bg-zinc-800 rounded-full flex items-center justify-center overflow-hidden border border-zinc-700 flex-shrink-0">
                        <img v-if="pos.club.logo_url" :src="pos.club.logo_url" class="w-full h-full object-cover p-0.5" />
                        <span v-else class="text-[9px] text-zinc-400">{{ pos.club.nombre.charAt(0) }}</span>
                     </div> 
-                    <span :class="['truncate', index === 0 ? 'text-zinc-200' : 'text-zinc-300']" style="max-width: 120px;">{{ pos.club.nombre }}</span>
+                    <span :class="['truncate text-xs sm:text-sm', index === 0 ? 'text-zinc-200' : 'text-zinc-300']" style="max-width: 130px;">{{ pos.club.nombre }}</span>
                   </td>
-                  <td class="py-3 text-center text-zinc-400 text-xs">{{ pos.pj }}</td>
-                  <td class="py-3 text-center text-zinc-400 text-xs">{{ pos.pg }}</td>
-                  <td class="py-3 text-center text-zinc-400 text-xs">{{ pos.pp }}</td>
-                  <td :class="['py-3 text-center text-xs font-medium', pos.dif > 0 ? 'text-green-500/80' : (pos.dif < 0 ? 'text-red-500/80' : 'text-zinc-500')]">
+
+                  <td class="py-2 sm:py-3 text-center text-zinc-400 text-xs">{{ pos.pj }}</td>
+                  
+                  <!-- Ocultamos PG, PP y DIF en celulares con "hidden sm:table-cell" -->
+                  <td class="py-2 sm:py-3 text-center text-zinc-400 text-xs hidden sm:table-cell">{{ pos.pg }}</td>
+                  <td class="py-2 sm:py-3 text-center text-zinc-400 text-xs hidden sm:table-cell">{{ pos.pp }}</td>
+                  <td :class="['py-2 sm:py-3 text-center text-xs font-medium hidden sm:table-cell', pos.dif > 0 ? 'text-green-500/80' : (pos.dif < 0 ? 'text-red-500/80' : 'text-zinc-500')]">
                     {{ pos.dif > 0 ? '+' + pos.dif : pos.dif }}
                   </td>
-                  <td :class="['py-3 text-center font-black text-sm', index === 0 ? 'text-zinc-100' : 'text-zinc-300']">{{ pos.puntos }}</td>
+                  
+                  <td :class="['py-2 sm:py-3 text-center font-black text-xs sm:text-sm', index === 0 ? 'text-zinc-100' : 'text-zinc-300']">{{ pos.puntos }}</td>
                 </tr>
               </tbody>
             </table>
