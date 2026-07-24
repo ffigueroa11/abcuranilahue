@@ -6,7 +6,7 @@ export default defineNuxtConfig({
     '@vite-pwa/nuxt'
   ],
   pwa: {
-    registerType: 'autoUpdate',
+    registerType: 'prompt',
     manifest: {
       name: 'Asociación de Básquetbol Curanilahue',
       short_name: 'ABC Curanilahue',

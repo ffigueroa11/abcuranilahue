@@ -126,9 +126,6 @@ const isMobileMenuOpen = ref(false);
         <p>© 2026 ABCuranilahue. Todos los derechos reservados.</p>
         <p class="mt-2 sm:mt-0">Desarrollo Plataforma Deportiva</p>
       </div>
-    </footer>
-  
-  <InstallPwa/>
-  <PwaReloadPrompt/>
+    </footer>   
   </div>
 </template>
