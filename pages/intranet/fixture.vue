@@ -16,18 +16,51 @@
       </button>
     </div>
 
+    <!-- NUEVO: Barra de Filtros -->
+    <div v-if="partidos && partidos.length > 0" class="bg-zinc-900 border border-zinc-800 rounded-xl p-4 mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+      
+      <!-- Filtro Categoría -->
+      <div>
+        <label class="block text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1.5">Serie / Categoría</label>
+        <select v-model="filtros.categoria" class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:border-blue-600 focus:outline-none transition-colors appearance-none">
+          <option value="todas">Todas las Categorías</option>
+          <option v-for="cat in categorias" :key="cat.id" :value="cat.id">{{ cat.nombre }}</option>
+        </select>
+      </div>
+
+      <!-- Filtro Estado -->
+      <div>
+        <label class="block text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1.5">Estado del Partido</label>
+        <select v-model="filtros.estado" class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:border-blue-600 focus:outline-none transition-colors appearance-none">
+          <option value="todos">Todos los Estados</option>
+          <option value="PROGRAMADO">Solo Programados</option>
+          <option value="FINALIZADO">Solo Finalizados</option>
+        </select>
+      </div>
+
+      <!-- Filtro Calidad de Datos (Planilla) -->
+      <div>
+        <label class="block text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1.5">Estado de Planilla</label>
+        <select v-model="filtros.cuadrada" class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:border-blue-600 focus:outline-none transition-colors appearance-none">
+          <option value="todos">Cualquier Estado</option>
+          <option value="cuadrada">Planillas Cuadradas (OK)</option>
+          <option value="faltan">Faltan Datos (Revisar)</option>
+        </select>
+      </div>
+    </div>
+
     <!-- Lista de Partidos -->
     <div v-if="pendingFixture" class="flex justify-center py-20">
       <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
     </div>
 
-    <div v-else-if="partidos && partidos.length > 0" class="grid gap-4">
+    <div v-else-if="partidosFiltrados && partidosFiltrados.length > 0" class="grid gap-4">
       <div 
-        v-for="partido in partidos" 
+        v-for="partido in partidosFiltrados" 
         :key="partido.id"
         class="bg-zinc-900 border border-zinc-800 rounded-xl p-5 flex flex-col lg:flex-row items-center justify-between gap-6 hover:border-zinc-700 transition-colors"
       >
-        <!-- Info de Fecha y Categoría -->
+        <!-- Info de Fecha y Categoría (Este es tu código original intacto) -->
         <div class="flex flex-col items-center lg:items-start min-w-[150px]">
           <span class="text-zinc-500 font-black text-[10px] uppercase tracking-widest mb-1">Jornada {{ partido.jornada }}</span>
           <span class="bg-zinc-950 border border-zinc-800 text-zinc-300 text-xs font-bold px-3 py-1 rounded mb-2 uppercase">
@@ -36,7 +69,7 @@
           <span class="text-amber-500 font-bold text-sm">{{ formatearFecha(partido.fecha_hora) }}</span>
         </div>
 
-        <!-- Marcador / Equipos -->
+        <!-- Marcador / Equipos (Este es tu código original intacto) -->
         <div class="flex-1 flex items-center justify-center gap-4 sm:gap-8 w-full">
           <!-- Local -->
           <div class="flex flex-col items-center gap-2 flex-1">
@@ -83,7 +116,7 @@
             {{ partido.estado === 'FINALIZADO' ? 'Ver Estadísticas' : 'Mesa de Control' }}
           </NuxtLink>
 
-          <!-- MARCA: Planilla Cuadrada (Suma = Total) -->
+          <!-- MARCA: Planilla Cuadrada -->
           <div v-if="partido.planilla_cuadrada" class="flex justify-center lg:justify-end w-full">
             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-green-950/60 border border-green-900 text-green-500 text-[9px] font-black uppercase tracking-widest shadow-sm">
               <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -93,7 +126,7 @@
             </span>
           </div>
 
-          <!-- MARCA: Faltan Datos (Finalizado pero suma no coincide) -->
+          <!-- MARCA: Faltan Datos -->
           <div v-else-if="partido.estado === 'FINALIZADO' && !partido.planilla_cuadrada" class="flex justify-center lg:justify-end w-full">
             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-red-950/60 border border-red-900 text-red-500 text-[9px] font-black uppercase tracking-widest shadow-sm animate-pulse">
               <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -104,6 +137,15 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- NUEVO: Mensaje si los filtros ocultan todo -->
+    <div v-else-if="partidos && partidos.length > 0" class="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-12 text-center">
+      <h3 class="text-zinc-300 font-bold text-lg mb-2">Sin Resultados</h3>
+      <p class="text-zinc-500 text-sm">No hay partidos que coincidan con los filtros seleccionados.</p>
+      <button @click="filtros = { categoria: 'todas', estado: 'todos', cuadrada: 'todos' }" class="mt-4 text-amber-500 font-bold text-xs uppercase hover:underline">
+        Limpiar Filtros
+      </button>
     </div>
 
     <div v-else class="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-12 text-center">
@@ -181,6 +223,38 @@ definePageMeta({ layout: 'intranet', middleware: 'auth' })
 const { data: partidos, pending: pendingFixture, refresh } = useFetch('/api/intranet/fixture')
 const { data: clubes } = useFetch('/api/intranet/clubes')
 const { data: categorias } = useFetch('/api/intranet/categorias')
+
+const filtros = ref({
+  categoria: 'todas' as number | 'todas',
+  estado: 'todos' as string,
+  cuadrada: 'todos' as string
+})
+
+const partidosFiltrados = computed(() => {
+  if (!partidos.value) return []
+
+  return partidos.value.filter((p: any) => {
+    // 1. Filtro por Categoría
+    if (filtros.value.categoria !== 'todas' && p.categoria_id !== filtros.value.categoria) {
+      return false
+    }
+    
+    // 2. Filtro por Estado (Programado / Finalizado)
+    if (filtros.value.estado !== 'todos' && p.estado !== filtros.value.estado) {
+      return false
+    }
+
+    // 3. Filtro por Planilla (Cuadrada / Faltan Datos)
+    if (filtros.value.cuadrada !== 'todos') {
+      // Si buscamos las que están OK
+      if (filtros.value.cuadrada === 'cuadrada' && !p.planilla_cuadrada) return false
+      // Si buscamos las que tienen errores (Deben estar finalizadas y NO cuadradas)
+      if (filtros.value.cuadrada === 'faltan' && (p.planilla_cuadrada || p.estado !== 'FINALIZADO')) return false
+    }
+
+    return true // Si pasa todas las validaciones, se muestra
+  })
+})
 
 interface FormularioPartido {
   jornada: number | null;
