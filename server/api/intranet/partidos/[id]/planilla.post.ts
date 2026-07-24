@@ -35,7 +35,6 @@ export default defineEventHandler(async (event) => {
   let finalScoreLocal = sumLocal
   let finalScoreVisita = sumVisita
 
-  // Validación estricta solo si se finaliza
   if (finalizar) {
     if (score_local_input !== undefined && score_local_input !== null && score_local_input !== '') {
       const parsedLocal = Number(score_local_input)
@@ -67,14 +66,15 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // Guardado en transacción
+  // Guardado en transacción optimizado con Promise.all
   await prisma.$transaction(async (tx) => {
-    for (const stat of estadisticas) {
+    // Mapeamos todas las promesas de upsert para ejecutarlas en paralelo
+    const estadisticasPromises = estadisticas.map((stat: any) => {
       const puntos = Number(stat.puntos) || 0
       const triples = Number(stat.triples) || 0
       const faltas = Number(stat.faltas) || 0
 
-      await tx.estadisticaPartido.upsert({
+      return tx.estadisticaPartido.upsert({
         where: {
           partido_id_jugador_id: {
             partido_id: id,
@@ -90,10 +90,12 @@ export default defineEventHandler(async (event) => {
           faltas
         }
       })
-    }
+    })
 
-    // CORRECCIÓN: Solo tocamos el estado si se está finalizando. 
-    // Si es guardado parcial, preservamos el estado actual del partido.
+    // Esperamos a que todas las estadísticas se guarden simultáneamente
+    await Promise.all(estadisticasPromises)
+
+    // Actualizamos el partido
     await tx.partido.update({
       where: { id },
       data: {
