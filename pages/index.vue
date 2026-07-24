@@ -84,9 +84,12 @@
         
         <!-- Tabla de Posiciones Dinámica -->
         <div class="bg-zinc-900/60 border border-zinc-800/80 rounded-xl p-6 shadow-xl backdrop-blur-sm col-span-1 lg:col-span-1 overflow-hidden flex flex-col">
-          <h2 class="text-lg font-black uppercase mb-6 tracking-tight flex items-center gap-2">
+          <h2 class="text-lg font-black uppercase mb-6 tracking-tight flex items-baseline gap-2">
             <span class="w-2 h-6 bg-amber-600 rounded-sm"></span>
-            Posiciones
+            <span>Posiciones</span>
+            <span v-if="selectedCategoriaNombre" class="text-xs text-zinc-500 font-medium normal-case">
+              {{ selectedCategoriaNombre }}
+            </span>
           </h2>
           
           <div v-if="pendingPos" class="flex justify-center py-8">
@@ -104,7 +107,7 @@
                   <!-- Ocultamos PG, PP y DIF en celulares con "hidden sm:table-cell" -->
                   <th class="text-center font-black pb-3 w-8 hidden sm:table-cell">PG</th>
                   <th class="text-center font-black pb-3 w-8 hidden sm:table-cell">PP</th>
-                  <th class="text-center font-black pb-3 w-10 hidden sm:table-cell">DIF</th>
+                  <th class="text-center font-black pb-3 w-10">DIF</th>
                   <th class="text-center font-black pb-3 text-amber-500 w-8 sm:w-10">PTS</th>
                 </tr>
               </thead>
@@ -125,7 +128,7 @@
                   <!-- Ocultamos PG, PP y DIF en celulares con "hidden sm:table-cell" -->
                   <td class="py-2 sm:py-3 text-center text-zinc-400 text-xs hidden sm:table-cell">{{ pos.pg }}</td>
                   <td class="py-2 sm:py-3 text-center text-zinc-400 text-xs hidden sm:table-cell">{{ pos.pp }}</td>
-                  <td :class="['py-2 sm:py-3 text-center text-xs font-medium hidden sm:table-cell', pos.dif > 0 ? 'text-green-500/80' : (pos.dif < 0 ? 'text-red-500/80' : 'text-zinc-500')]">
+                  <td :class="['py-2 sm:py-3 text-center text-xs font-medium', pos.dif > 0 ? 'text-green-500/80' : (pos.dif < 0 ? 'text-red-500/80' : 'text-zinc-500')]">
                     {{ pos.dif > 0 ? '+' + pos.dif : pos.dif }}
                   </td>
                   
@@ -142,9 +145,12 @@
 
         <!-- Últimos Resultados -->
         <div class="bg-zinc-900/60 border border-zinc-800/80 rounded-xl p-6 shadow-xl backdrop-blur-sm">
-          <h2 class="text-lg font-black uppercase mb-6 tracking-tight flex items-center gap-2">
+          <h2 class="text-lg font-black uppercase mb-6 tracking-tight flex items-baseline gap-2">
             <span class="w-2 h-6 bg-red-800 rounded-sm"></span>
-            Resultados
+            <span>Resultados</span>
+            <span v-if="selectedCategoriaNombre" class="text-xs text-zinc-500 font-medium normal-case">
+              {{ selectedCategoriaNombre }}
+            </span>
           </h2>
 
           <div v-if="pendingUltimos" class="flex justify-center py-8">
@@ -208,9 +214,12 @@
 
         <!-- Próximos Partidos -->
         <div class="bg-zinc-900/60 border border-zinc-800/80 rounded-xl p-6 shadow-xl backdrop-blur-sm">
-          <h2 class="text-lg font-black uppercase mb-6 tracking-tight flex items-center gap-2">
+          <h2 class="text-lg font-black uppercase mb-6 tracking-tight flex items-baseline gap-2">
             <span class="w-2 h-6 bg-blue-700 rounded-sm"></span>
-            Próxima Fecha
+            <span>Próxima Fecha</span>
+            <span v-if="selectedCategoriaNombre" class="text-xs text-zinc-500 font-medium normal-case">
+              {{ selectedCategoriaNombre }}
+            </span>
           </h2>
           
           <div v-if="pendingPartidos" class="flex justify-center py-8">
@@ -315,6 +324,13 @@ const { data: categorias } = await useFetch('/api/categorias')
 // 3. Inicializamos el ID seleccionado directamente (Adiós al watch)
 const categoriaDefault = categorias.value?.find(c => c.nombre.toUpperCase() === 'TODO COMPETIDOR')
 const selectedCategoriaId = ref<number | null>(categoriaDefault ? categoriaDefault.id : (categorias.value?.[0]?.id || null))
+
+// Computed para obtener el nombre de la categoría actual
+const selectedCategoriaNombre = computed(() => {
+  if (!categorias.value || !selectedCategoriaId.value) return '';
+  const categoria = categorias.value.find(c => c.id === selectedCategoriaId.value);
+  return categoria ? categoria.nombre : '';
+});
 
 // 4. Cargas Reactivas (Nuxt 3 detecta automáticamente si selectedCategoriaId cambia y vuelve a llamar a la API)
 const { data: posiciones, pending: pendingPos } = useFetch('/api/posiciones', {
