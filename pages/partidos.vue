@@ -99,8 +99,18 @@
       <!-- PESTAÑA: RESULTADOS (FINALIZADOS) -->
       <div v-else-if="activeTab === 'resultados'">
         <div v-if="partidosFinalizados && partidosFinalizados.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div v-for="partido in partidosFinalizados" :key="partido.id" class="bg-zinc-950/50 border border-zinc-800 rounded-lg p-5 relative overflow-hidden group hover:border-zinc-700 transition-colors shadow-lg">
+          <div 
+            v-for="partido in partidosFinalizados" 
+            :key="partido.id" 
+            @click="abrirDetallePartido(partido.id)"
+            class="bg-zinc-950/50 border border-zinc-800 rounded-lg p-5 relative overflow-hidden group hover:border-amber-500/50 hover:bg-zinc-900 transition-all shadow-lg cursor-pointer"
+          >
             <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-800 via-zinc-800 to-blue-700 opacity-50"></div>
+            
+            <!-- Leyenda superior emergente -->
+            <div class="absolute top-0 right-0 bg-amber-500/10 text-amber-500 text-[8px] font-black uppercase px-2 py-1 rounded-bl-lg opacity-0 group-hover:opacity-100 transition-opacity z-10">
+              Ver Estadísticas
+            </div>
             
             <div class="flex justify-between items-center mb-4 border-b border-zinc-800/50 pb-3">
               <span class="text-[10px] text-zinc-400 font-black tracking-widest uppercase">
@@ -151,6 +161,99 @@
 
     </div>
   </div>
+  <!-- MODAL: DETALLE DEL PARTIDO -->
+    <div v-if="modalPartido.abierto" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+      <div class="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-4xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden relative">
+        
+        <!-- Botón Cerrar -->
+        <button @click="modalPartido.abierto = false" class="absolute top-4 right-4 z-10 text-zinc-400 hover:text-white bg-zinc-950/50 p-2 rounded-xl border border-zinc-800 transition-colors">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+
+        <div v-if="modalPartido.pending" class="flex items-center justify-center py-32">
+          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500"></div>
+        </div>
+
+        <div v-else-if="modalPartido.data" class="flex flex-col h-full overflow-hidden">
+          
+          <!-- Encabezado del Marcador (Sticky) -->
+          <div class="bg-zinc-950 border-b border-zinc-800 p-6 flex-shrink-0">
+            <div class="text-center mb-4">
+              <span class="text-[10px] font-black text-amber-500 uppercase tracking-widest bg-amber-900/20 px-3 py-1 rounded-full border border-amber-500/30">
+                Finalizado
+              </span>
+            </div>
+            <div class="flex items-center justify-center gap-4 sm:gap-10">
+              <div class="flex flex-col items-center flex-1">
+                <img v-if="modalPartido.data.local.logo_url" :src="modalPartido.data.local.logo_url" class="w-12 h-12 sm:w-16 sm:h-16 object-contain mb-2" />
+                <span class="text-zinc-100 font-black text-sm sm:text-base uppercase text-center leading-tight">{{ modalPartido.data.local.nombre }}</span>
+              </div>
+              <div class="flex items-center gap-3 bg-zinc-900 border border-zinc-800 px-4 py-2 rounded-xl shadow-inner">
+                <span class="text-3xl sm:text-4xl font-black text-amber-500">{{ modalPartido.data.score_local }}</span>
+                <span class="text-zinc-600 font-bold">-</span>
+                <span class="text-3xl sm:text-4xl font-black text-white">{{ modalPartido.data.score_visita }}</span>
+              </div>
+              <div class="flex flex-col items-center flex-1">
+                <img v-if="modalPartido.data.visita.logo_url" :src="modalPartido.data.visita.logo_url" class="w-12 h-12 sm:w-16 sm:h-16 object-contain mb-2" />
+                <span class="text-zinc-100 font-black text-sm sm:text-base uppercase text-center leading-tight">{{ modalPartido.data.visita.nombre }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cuerpo: Listas de Jugadores (Scrollable) -->
+          <div class="flex-1 overflow-y-auto p-4 sm:p-6 bg-zinc-900/50">
+            <div v-if="modalPartido.data.statsLocal.length === 0 && modalPartido.data.statsVisita.length === 0" class="text-center py-12">
+              <p class="text-zinc-500 font-bold uppercase tracking-widest text-xs">Aún no hay desglose estadístico cargado para este partido.</p>
+            </div>
+            
+            <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+              
+              <!-- Planilla Local -->
+              <div>
+                <h3 class="text-xs font-black text-zinc-400 uppercase tracking-widest mb-3 flex items-center justify-between border-b border-zinc-800 pb-2">
+                  <span>{{ modalPartido.data.local.nombre }}</span>
+                  <span class="text-[9px] text-zinc-500">Puntos</span>
+                </h3>
+                <div class="space-y-1.5">
+                  <div v-for="stat in modalPartido.data.statsLocal" :key="stat.id" class="flex items-center justify-between bg-zinc-950/50 border border-zinc-800/50 px-3 py-2 rounded-lg hover:border-zinc-700 transition-colors">
+                    <div class="flex items-center gap-3">
+                      <span class="text-[10px] font-black text-amber-500 w-4 text-right">{{ stat.jugador.numero || '-' }}</span>
+                      <span class="text-xs font-bold text-zinc-200 uppercase truncate max-w-[150px]">{{ stat.jugador.nombre }}</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                      <span v-if="stat.triples > 0" class="text-[9px] font-bold text-zinc-500" title="Triples anotados">{{ stat.triples }} 3P</span>
+                      <span class="text-sm font-black text-amber-500 w-6 text-right">{{ stat.puntos }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Planilla Visita -->
+              <div>
+                <h3 class="text-xs font-black text-zinc-400 uppercase tracking-widest mb-3 flex items-center justify-between border-b border-zinc-800 pb-2">
+                  <span>{{ modalPartido.data.visita.nombre }}</span>
+                  <span class="text-[9px] text-zinc-500">Puntos</span>
+                </h3>
+                <div class="space-y-1.5">
+                  <div v-for="stat in modalPartido.data.statsVisita" :key="stat.id" class="flex items-center justify-between bg-zinc-950/50 border border-zinc-800/50 px-3 py-2 rounded-lg hover:border-zinc-700 transition-colors">
+                    <div class="flex items-center gap-3">
+                      <span class="text-[10px] font-black text-amber-500 w-4 text-right">{{ stat.jugador.numero || '-' }}</span>
+                      <span class="text-xs font-bold text-zinc-200 uppercase truncate max-w-[150px]">{{ stat.jugador.nombre }}</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                      <span v-if="stat.triples > 0" class="text-[9px] font-bold text-zinc-500" title="Triples anotados">{{ stat.triples }} 3P</span>
+                      <span class="text-sm font-black text-white w-6 text-right">{{ stat.puntos }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -185,5 +288,30 @@ const formatFechaCorta = (fecha: string | Date) => {
   const dateObj = new Date(fecha);
   const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
   return `${dateObj.getUTCDate()} ${meses[dateObj.getUTCMonth()]}, ${dateObj.getUTCFullYear()}`;
+}
+
+// ==========================================
+// MODAL DETALLE DE PARTIDO PÚBLICO
+// ==========================================
+const modalPartido = ref({
+  abierto: false,
+  pending: false,
+  data: null as any
+})
+
+const abrirDetallePartido = async (id: number) => {
+  modalPartido.value.abierto = true
+  modalPartido.value.pending = true
+  modalPartido.value.data = null
+
+  try {
+    const data = await $fetch(`/api/partidos/${id}/detalles`)
+    modalPartido.value.data = data
+  } catch (error) {
+    console.error('Error al cargar el detalle del partido', error)
+    modalPartido.value.abierto = false
+  } finally {
+    modalPartido.value.pending = false
+  }
 }
 </script>
