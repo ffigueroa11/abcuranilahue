@@ -448,7 +448,7 @@
                       <span v-else class="text-xs font-black text-zinc-500">{{ stat.rivalNombre.charAt(0) }}</span>
                     </div>
                     <!-- Nombre Rival: Visible solo en SM en adelante (oculto en móviles) -->
-                    <span class="hidden sm:block text-xs font-bold text-zinc-200 uppercase truncate max-w-[120px]">{{ stat.rivalNombre }}</span>
+                    <span class="block text-xs font-bold text-zinc-200 uppercase truncate max-w-[120px]">{{ stat.rivalNombre }}</span>
                   </div>
                   
                   <div class="text-right">
