@@ -124,13 +124,22 @@
         
         <!-- Tabla de Posiciones Dinámica -->
         <div class="bg-zinc-900/60 border border-zinc-800/80 rounded-xl p-6 shadow-xl backdrop-blur-sm col-span-1 lg:col-span-1 overflow-hidden flex flex-col">
-          <h2 class="text-lg font-black uppercase mb-6 tracking-tight flex items-baseline gap-2">
-            <span class="w-2 h-6 bg-amber-600 rounded-sm"></span>
-            <span>Posiciones</span>
-            <span v-if="selectedCategoriaNombre" class="text-xs text-zinc-500 font-medium normal-case">
-              {{ selectedCategoriaNombre }}
+          <!-- Encabezado con leyenda para móviles -->
+          <div class="flex flex-col sm:flex-row sm:items-baseline justify-between mb-6 gap-2">
+            <h2 class="text-lg font-black uppercase tracking-tight flex items-baseline gap-2">
+              <span class="w-2 h-6 bg-amber-600 rounded-sm"></span>
+              <span>Posiciones</span>
+              <span v-if="selectedCategoriaNombre" class="text-xs text-zinc-500 font-medium normal-case">
+                {{ selectedCategoriaNombre }}
+              </span>
+            </h2>
+            
+            <!-- Mensaje visible SOLO en móviles -->
+            <span class="text-[9px] text-amber-500/80 uppercase tracking-widest flex items-center gap-1 sm:hidden">
+              <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"/></svg>
+              Toca un equipo para ver historial
             </span>
-          </h2>
+          </div>
           
           <div v-if="pendingPos" class="flex justify-center py-8">
             <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-amber-600"></div>
@@ -150,15 +159,30 @@
                 </tr>
               </thead>
               <tbody class="divide-y divide-zinc-800/50">
-                <tr v-for="(pos, index) in posiciones" :key="pos.id" class="hover:bg-zinc-800/30 transition-colors group">
+                <tr 
+                  v-for="(pos, index) in posiciones" 
+                  :key="pos.id" 
+                  @click="abrirDetalleEquipo(pos.club.id, pos.club.nombre)"
+                  class="hover:bg-amber-900/20 active:bg-amber-900/40 transition-colors group cursor-pointer"
+                  title="Haz clic para ver los partidos jugados"
+                >
                   <td :class="['py-2 sm:py-3 font-black text-xs sm:text-sm', index === 0 ? 'text-amber-500' : 'text-zinc-500']">{{ index + 1 }}</td>
                   
+                  <!-- Columna de Equipo Modificada -->
                   <td class="py-2 sm:py-3 font-bold flex items-center gap-2 pr-2 sm:pr-4">
-                    <div class="w-6 h-6 bg-zinc-800 rounded-full flex items-center justify-center overflow-hidden border border-zinc-700 flex-shrink-0">
+                    <div class="w-6 h-6 bg-zinc-800 rounded-full flex items-center justify-center overflow-hidden border border-zinc-700 flex-shrink-0 group-hover:border-amber-500 transition-colors">
                        <img v-if="pos.club.logo_url" :src="pos.club.logo_url" class="w-full h-full object-cover p-0.5" />
                        <span v-else class="text-[9px] text-zinc-400">{{ pos.club.nombre.charAt(0) }}</span>
                     </div> 
-                    <span :class="['truncate text-xs sm:text-sm', index === 0 ? 'text-zinc-200' : 'text-zinc-300']" style="max-width: 130px;">{{ pos.club.nombre }}</span>
+                    
+                    <span :class="['truncate text-xs sm:text-sm transition-colors', index === 0 ? 'text-zinc-200' : 'text-zinc-300', 'group-hover:text-amber-400']" style="max-width: 120px;">
+                      {{ pos.club.nombre }}
+                    </span>
+                    
+                    <!-- Ícono Chevron (Flecha) visible SOLO en móviles -->
+                    <svg class="w-3 h-3 text-zinc-600 sm:hidden flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
                   </td>
 
                   <td class="py-2 sm:py-3 text-center text-zinc-400 text-xs">{{ pos.pj }}</td>
@@ -197,9 +221,12 @@
           <div v-else-if="ultimosPartidos && ultimosPartidos.length > 0" class="space-y-4">
             <div v-for="partido in ultimosPartidos" @click="abrirDetallePartido(partido.id)" :key="partido.id" class="bg-zinc-950/50 border border-zinc-800 rounded-lg p-4 sm:p-5 relative overflow-hidden group hover:border-amber-500/50 hover:bg-zinc-900 transition-all cursor-pointer">
               <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-800 via-zinc-800 to-blue-700 opacity-50"></div>
-              <div class="absolute top-0 right-0 bg-amber-500/10 text-amber-500 text-[8px] font-black uppercase px-2 py-1 rounded-bl-lg opacity-0 group-hover:opacity-100 transition-opacity">
-                Ver Estadísticas
-              </div>
+              <div class="absolute top-0 right-0 bg-amber-500/10 text-amber-500 text-[9px] font-black uppercase px-3 py-1.5 rounded-bl-lg shadow-sm z-10 flex items-center gap-1.5 border-b border-l border-amber-500/20">
+              <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+              Ver Estadísticas
+            </div>
               <div class="text-[10px] text-zinc-500 font-black tracking-widest text-center uppercase mb-3">
                 Finalizado • {{ formatFechaCorta(partido.fecha_hora) }}
               </div>
@@ -631,6 +658,80 @@
       </div>
     </div>
   </div>
+  <!-- MODAL: HISTORIAL DE PARTIDOS DEL EQUIPO -->
+    <div v-if="modalEquipo.abierto" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+      <div class="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-md shadow-2xl flex flex-col max-h-[85vh] overflow-hidden relative">
+        
+        <!-- Header del Modal -->
+        <div class="p-5 border-b border-zinc-800 bg-zinc-950/80 relative flex-shrink-0">
+          <button @click="modalEquipo.abierto = false" class="absolute top-4 right-4 text-zinc-500 hover:text-white transition-colors bg-zinc-900 p-1.5 rounded-lg border border-zinc-700">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+          <span class="text-[10px] font-black text-amber-500 uppercase tracking-widest mb-1 block">
+            Desglose de Partidos
+          </span>
+          <h3 class="text-lg font-black text-white uppercase pr-8 leading-tight">{{ modalEquipo.nombreEquipo }}</h3>
+          <p class="text-xs text-zinc-400 font-bold uppercase tracking-wider mt-1">{{ selectedCategoriaNombre }}</p>
+        </div>
+
+        <!-- Contenido (Scrollable) -->
+        <div class="p-4 overflow-y-auto flex-1 bg-zinc-900/50">
+          <div v-if="modalEquipo.pending" class="flex justify-center py-12">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500"></div>
+          </div>
+          
+          <div v-else-if="modalEquipo.partidos.length > 0" class="space-y-3">
+            <div 
+              v-for="partido in modalEquipo.partidos" 
+              :key="partido.id" 
+              class="bg-zinc-950 border border-zinc-800 p-4 rounded-xl relative overflow-hidden"
+            >
+              <!-- Indicador visual si ganó o perdió (opcional, calculando según el score) -->
+              <div 
+                class="absolute left-0 top-0 bottom-0 w-1"
+                :class="{
+                  'bg-green-500': (partido.local_id === modalEquipo.equipoId && partido.score_local > partido.score_visita) || (partido.visita_id === modalEquipo.equipoId && partido.score_visita > partido.score_local),
+                  'bg-red-500': (partido.local_id === modalEquipo.equipoId && partido.score_local < partido.score_visita) || (partido.visita_id === modalEquipo.equipoId && partido.score_visita < partido.score_local),
+                  'bg-zinc-500': partido.score_local === partido.score_visita
+                }"
+              ></div>
+
+              <div class="text-[9px] text-zinc-500 font-black tracking-widest uppercase mb-3 text-center">
+                {{ formatFechaCorta(partido.fecha_hora) }}
+              </div>
+
+              <!-- Marcador Miniatura -->
+              <div class="flex items-center justify-between gap-2">
+                <!-- Local -->
+                <div class="flex flex-col items-center flex-1">
+                  <span class="text-xs font-bold uppercase truncate max-w-[90px]" :class="partido.local_id === modalEquipo.equipoId ? 'text-amber-500' : 'text-zinc-400'">
+                    {{ partido.local.nombre }}
+                  </span>
+                </div>
+                
+                <!-- Score -->
+                <div class="flex items-center gap-2 bg-zinc-900 border border-zinc-800 px-3 py-1.5 rounded-lg flex-shrink-0">
+                  <span class="text-sm font-black" :class="partido.local_id === modalEquipo.equipoId ? 'text-amber-500' : 'text-zinc-100'">{{ partido.score_local }}</span>
+                  <span class="text-zinc-600 font-bold">-</span>
+                  <span class="text-sm font-black" :class="partido.visita_id === modalEquipo.equipoId ? 'text-amber-500' : 'text-zinc-100'">{{ partido.score_visita }}</span>
+                </div>
+
+                <!-- Visita -->
+                <div class="flex flex-col items-center flex-1">
+                  <span class="text-xs font-bold uppercase truncate max-w-[90px]" :class="partido.visita_id === modalEquipo.equipoId ? 'text-amber-500' : 'text-zinc-400'">
+                    {{ partido.visita.nombre }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div v-else class="text-center py-12">
+            <p class="text-zinc-500 text-xs font-bold uppercase tracking-widest">No hay partidos registrados</p>
+          </div>
+        </div>
+      </div>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -806,7 +907,37 @@ const abrirDetallePartido = async (id: number) => {
     modalPartido.value.pending = false
   }
 }
+// ==========================================
+// MODAL HISTORIAL DE PARTIDOS DEL EQUIPO
+// ==========================================
+const modalEquipo = ref({
+  abierto: false,
+  pending: false,
+  equipoId: 0,
+  nombreEquipo: '',
+  partidos: [] as any[]
+})
 
+const abrirDetalleEquipo = async (equipoId: number, nombreEquipo: string) => {
+  if (!selectedCategoriaId.value) return
+
+  modalEquipo.value.abierto = true
+  modalEquipo.value.pending = true
+  modalEquipo.value.equipoId = equipoId
+  modalEquipo.value.nombreEquipo = nombreEquipo
+  modalEquipo.value.partidos = []
+
+  try {
+    const data: any = await $fetch(`/api/equipos/${equipoId}/partidos-categoria`, {
+      query: { categoria_id: selectedCategoriaId.value }
+    })
+    modalEquipo.value.partidos = data
+  } catch (error) {
+    console.error('Error al cargar historial del equipo:', error)
+  } finally {
+    modalEquipo.value.pending = false
+  }
+}
 </script>
 
 <style>

@@ -108,7 +108,10 @@
             <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-800 via-zinc-800 to-blue-700 opacity-50"></div>
             
             <!-- Leyenda superior emergente -->
-            <div class="absolute top-0 right-0 bg-amber-500/10 text-amber-500 text-[8px] font-black uppercase px-2 py-1 rounded-bl-lg opacity-0 group-hover:opacity-100 transition-opacity z-10">
+            <div class="absolute top-0 right-0 bg-amber-500/10 text-amber-500 text-[9px] font-black uppercase px-3 py-1.5 rounded-bl-lg shadow-sm z-10 flex items-center gap-1.5 border-b border-l border-amber-500/20">
+              <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
               Ver Estadísticas
             </div>
             
