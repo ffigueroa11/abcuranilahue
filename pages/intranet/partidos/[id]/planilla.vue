@@ -159,6 +159,15 @@
             
             <!-- CONTENIDO MODO BUSCAR -->
             <div v-if="modal.modo === 'buscar'" class="p-5 flex flex-col gap-4 overflow-hidden">
+               <!-- NUEVO: Indicador de Filtro -->
+              <div class="flex items-center gap-2 -mb-2">
+                <span v-if="esPartidoDamas" class="text-[9px] text-pink-400 font-black uppercase tracking-widest bg-pink-950/50 border border-pink-900 px-2 py-1 rounded-md">
+                  Filtro Activo: Rama Femenina
+                </span>
+                <span v-else class="text-[9px] text-blue-400 font-black uppercase tracking-widest bg-blue-950/50 border border-blue-900 px-2 py-1 rounded-md">
+                  Filtro Activo: Rama Masculina
+                </span>
+              </div>
               <input 
                 v-model="modal.busqueda" 
                 type="text" 
@@ -189,20 +198,39 @@
                 + Crear Jugador Nuevo
               </button>
             </div>
-
+            
             <!-- CONTENIDO MODO CREAR -->
-            <div v-if="modal.modo === 'crear'" class="p-5 overflow-y-auto">
-              <form @submit.prevent="guardarYAgregarJugador" class="space-y-4">
+            <div v-if="modal.modo === 'crear'" class="p-5 overflow-y-auto max-h-[70vh]">
+              <form @submit.prevent="guardarYAgregarJugador" class="space-y-5">
+                
+                <!-- Iterador de Jugadores Dinámico -->
                 <div>
-                  <label class="block text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1.5">Nombre Completo</label>
-                  <input v-model="formularioCrear.nombre" type="text" required class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2.5 text-sm text-zinc-200 focus:outline-none focus:border-amber-500"/>
+                  <div class="flex justify-between items-end mb-2">
+                    <label class="block text-[10px] font-black text-zinc-500 uppercase tracking-widest">Jugadores a Registrar</label>
+                  </div>
+                  
+                  <div class="space-y-2">
+                    <div v-for="(jugador, index) in formularioCrear.jugadores" :key="index" class="flex items-center gap-2 animate-fade-in">
+                      <input v-model="jugador.nombre" type="text" placeholder="Nombre Completo" required class="flex-1 bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2.5 text-sm text-zinc-200 focus:outline-none focus:border-amber-500 transition-colors"/>
+                      <input v-model="jugador.numero" type="number" placeholder="Nº" class="w-16 bg-zinc-950 border border-zinc-800 rounded-lg px-2 py-2.5 text-sm text-zinc-200 focus:outline-none focus:border-amber-500 text-center transition-colors"/>
+                      
+                      <!-- Botón Eliminar Fila (Solo si hay más de 1) -->
+                      <button v-if="formularioCrear.jugadores.length > 1" @click.prevent="removerFilaJugador(index)" class="p-2.5 text-zinc-600 hover:text-red-500 hover:bg-red-950/30 transition-all bg-zinc-950 rounded-lg border border-zinc-800">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <!-- Botón Agregar Fila -->
+                  <button @click.prevent="agregarFilaJugador" class="mt-3 text-[10px] font-black text-amber-500 hover:text-amber-400 uppercase tracking-widest flex items-center gap-1.5 transition-colors px-2 py-1 bg-amber-500/10 rounded-md border border-amber-500/20">
+                    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                    Añadir otro jugador
+                  </button>
                 </div>
-                <div>
-                  <label class="block text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1.5">Nº Camiseta (Opcional)</label>
-                  <input v-model="formularioCrear.numero" type="number" class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2.5 text-sm text-zinc-200 focus:outline-none focus:border-amber-500"/>
-                </div>
-                <div>
-                  <label class="block text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1.5">Categorías</label>
+
+                <!-- Categorías (Se aplican en lote a todos los nuevos) -->
+                <div class="pt-2 border-t border-zinc-800/50">
+                  <label class="block text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2">Categorías Asociadas (En Lote)</label>
                   <div class="grid grid-cols-2 gap-2 bg-zinc-950 p-3 rounded-lg border border-zinc-800">
                     <label v-for="cat in categorias" :key="cat.id" class="flex items-center gap-2 cursor-pointer">
                       <input type="checkbox" :value="cat.id" v-model="formularioCrear.categorias_ids" class="w-4 h-4 rounded border-zinc-700 bg-zinc-900 text-amber-500"/>
@@ -212,10 +240,10 @@
                 </div>
 
                 <div class="flex gap-3 pt-4 border-t border-zinc-800">
-                  <button type="button" @click="modal.modo = 'buscar'" class="flex-1 px-4 py-2.5 border border-zinc-700 text-zinc-400 hover:text-white rounded-lg font-bold text-xs uppercase transition-colors">Volver</button>
-                  <button type="submit" :disabled="modal.guardando" class="flex-1 bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-white px-4 py-2.5 rounded-lg font-black text-xs uppercase transition-colors flex justify-center">
+                  <button type="button" @click="modal.modo = 'buscar'" class="flex-1 px-4 py-3 border border-zinc-700 text-zinc-400 hover:text-white rounded-lg font-bold text-xs uppercase transition-colors">Volver</button>
+                  <button type="submit" :disabled="modal.guardando" class="flex-1 bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-white px-4 py-3 rounded-lg font-black text-xs uppercase transition-colors flex justify-center items-center">
                     <span v-if="modal.guardando" class="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full mr-2"></span>
-                    Guardar y Usar
+                    Registrar {{ formularioCrear.jugadores.length > 1 ? 'Jugadores' : 'Jugador' }}
                   </button>
                 </div>
               </form>
@@ -271,8 +299,20 @@ const modal = ref({
   guardando: false
 })
 
-const formularioCrear = ref({ nombre: '', numero: '', club_id: 0 as number, categorias_ids: [] as number[] })
+const formularioCrear = ref({ 
+  jugadores: [{ nombre: '', numero: '' }], 
+  club_id: 0 as number, 
+  categorias_ids: [] as number[] 
+})
 
+// Funciones para manipular las filas dinámicas
+const agregarFilaJugador = () => {
+  formularioCrear.value.jugadores.push({ nombre: '', numero: '' })
+}
+
+const removerFilaJugador = (index: number) => {
+  formularioCrear.value.jugadores.splice(index, 1)
+}
 // ----------------------------------------------------
 // 1. INICIALIZACIÓN ULTRASSEGURA
 // ----------------------------------------------------
@@ -315,21 +355,51 @@ watch(() => partido.value, (newVal: any) => {
 // ----------------------------------------------------
 const abrirBuscador = (tipo: 'local' | 'visita', equipoId: number) => {
   modal.value = { abierto: true, modo: 'buscar', tipo, equipoId, busqueda: '', guardando: false }
+  
+  // Reseteamos siempre con 1 fila vacía
   formularioCrear.value = { 
-    nombre: '', numero: '', club_id: equipoId, 
+    jugadores: [{ nombre: '', numero: '' }], 
+    club_id: equipoId, 
     categorias_ids: partido.value?.categoria_id ? [partido.value.categoria_id] : [] 
   }
 }
+
+// --- NUEVO: Detectar si el partido actual es de rama Femenina ---
+const esPartidoDamas = computed(() => {
+  const nombreCat = partido.value?.categoria?.nombre?.toUpperCase() || ''
+  return nombreCat.includes('DAMA') || nombreCat.includes('FEM')
+})
 
 const jugadoresFiltrados = computed(() => {
   const roster = modal.value.tipo === 'local' ? rosterLocal.value : rosterVisita.value
   const activos = modal.value.tipo === 'local' ? jugadoresEnPlanillaLocal.value : jugadoresEnPlanillaVisita.value
   const idsActivos = activos.map(a => a.id)
   
-  return roster.filter(j => 
-    !idsActivos.includes(j.id) && 
-    (j.nombre || '').toLowerCase().includes((modal.value.busqueda || '').toLowerCase())
-  )
+  return roster.filter(j => {
+    // 1. Excluir si ya está anotado en la planilla
+    if (idsActivos.includes(j.id)) return false
+    
+    // 2. Filtro de búsqueda por texto
+    if (!(j.nombre || '').toLowerCase().includes((modal.value.busqueda || '').toLowerCase())) return false
+
+    // 3. FILTRO DE RAMA (Damas vs Varones)
+    const categoriasJugador = j.categorias || []
+    
+    // Solo aplicamos la restricción si el jugador tiene categorías asignadas previamente
+    if (categoriasJugador.length > 0) {
+      const esJugadora = categoriasJugador.some((c: any) => 
+        c.nombre.toUpperCase().includes('DAMA') || c.nombre.toUpperCase().includes('FEM')
+      )
+
+      // Si el partido es de damas, ocultamos a los varones
+      if (esPartidoDamas.value && !esJugadora) return false
+      
+      // Si el partido es de varones, ocultamos a las damas
+      if (!esPartidoDamas.value && esJugadora) return false
+    }
+
+    return true // Pasa todas las pruebas, se muestra en el modal
+  })
 })
 
 const agregarJugador = (jugador: any) => {
@@ -359,28 +429,46 @@ const removerDePlanilla = (tipo: 'local' | 'visita', id: number) => {
 const guardarYAgregarJugador = async () => {
   modal.value.guardando = true
   try {
-    if (!formularioCrear.value.nombre && modal.value.busqueda) {
-      formularioCrear.value.nombre = modal.value.busqueda
+    // Si veníamos del buscador y la primera fila está vacía, le pasamos el texto buscado
+    if (!formularioCrear.value.jugadores[0].nombre && modal.value.busqueda) {
+      formularioCrear.value.jugadores[0].nombre = modal.value.busqueda
     }
 
-    const nuevoJugador: any = await $fetch('/api/intranet/jugadores/quick', {
-      method: 'POST',
-      body: formularioCrear.value
-    })
+    const jugadoresCreados = []
 
+    // 1. Iteramos sobre la lista de jugadores y ejecutamos la creación en el backend
+    for (const jugador of formularioCrear.value.jugadores) {
+      if (!jugador.nombre.trim()) continue // Ignoramos filas que hayan quedado en blanco
+
+      const payload = {
+        nombre: jugador.nombre,
+        numero: jugador.numero,
+        club_id: formularioCrear.value.club_id,
+        categorias_ids: formularioCrear.value.categorias_ids
+      }
+
+      const nuevoJugador: any = await $fetch('/api/intranet/jugadores/quick', {
+        method: 'POST',
+        body: payload
+      })
+      
+      jugadoresCreados.push(nuevoJugador)
+    }
+
+    // 2. Rompemos caché y refrescamos el Roster en segundo plano
     const timestamp = Date.now()
     const datosFrescos: any = await $fetch(`/api/intranet/partidos/${partidoId}/planilla?t=${timestamp}`)
     
-    // Validamos que la respuesta tenga datos antes de esparcirlos
     if (datosFrescos) {
        rosterLocal.value = datosFrescos.local?.jugadores ? [...datosFrescos.local.jugadores] : []
        rosterVisita.value = datosFrescos.visita?.jugadores ? [...datosFrescos.visita.jugadores] : []
     }
 
-    agregarJugador(nuevoJugador)
+    // 3. Inyectamos a todos los nuevos jugadores a la tabla de la planilla visualmente
+    jugadoresCreados.forEach(j => agregarJugador(j))
 
   } catch (e: any) {
-    alert(e.data?.statusMessage || 'Error al guardar el jugador')
+    alert(e.data?.statusMessage || 'Error al guardar los jugadores. Revisa si alguno ya existía o si hay un error de conexión.')
   } finally {
     modal.value.guardando = false
   }

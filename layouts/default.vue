@@ -84,8 +84,8 @@ const isMobileMenuOpen = ref(false);
           <h3 class="text-zinc-100 font-black uppercase mb-4 tracking-widest border-l-2 border-amber-600 pl-2">Competición</h3>
           <ul class="space-y-3 text-zinc-400">
             <li><NuxtLink to="/equipos" class="hover:text-amber-500 transition-colors">Equipos Participantes</NuxtLink></li>
-            <li><NuxtLink to="/documentos/bases" class="hover:text-amber-500 transition-colors">Bases del Campeonato</NuxtLink></li>
-            <li><NuxtLink to="/documentos/tribunal" class="hover:text-amber-500 transition-colors">Tribunal de Disciplina</NuxtLink></li>
+            <!-- <li><NuxtLink to="/documentos/bases" class="hover:text-amber-500 transition-colors">Bases del Campeonato</NuxtLink></li> -->
+            <!-- <li><NuxtLink to="/documentos/tribunal" class="hover:text-amber-500 transition-colors">Tribunal de Disciplina</NuxtLink></li> -->
           </ul>
         </div>
         <div>
@@ -93,7 +93,7 @@ const isMobileMenuOpen = ref(false);
           <ul class="space-y-3 text-zinc-400">
             <li><NuxtLink to="/galeria" class="hover:text-amber-500 transition-colors">Galería de Fotos</NuxtLink></li>
             <li><a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="hover:text-amber-500 transition-colors">Transmisiones (YouTube)</a></li>
-            <li><NuxtLink to="/noticias" class="hover:text-amber-500 transition-colors">Noticias</NuxtLink></li>
+            <!-- <li><NuxtLink to="/noticias" class="hover:text-amber-500 transition-colors">Noticias</NuxtLink></li> -->
           </ul>
         </div>
         <div>
