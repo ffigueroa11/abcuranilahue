@@ -330,80 +330,142 @@
 
         <!-- Grid de Top 5 -->
         <div v-else class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          
           <!-- Columna: Top Anotadores -->
-          <div class="bg-zinc-900/40 border border-zinc-800/80 rounded-2xl p-6 backdrop-blur-sm">
-            <h3 class="text-white font-black uppercase tracking-wider mb-6 flex items-center gap-2">
-              <svg class="w-5 h-5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-              Top 5 Goleadores
-            </h3>
+          <div class="bg-zinc-900/40 border border-zinc-800/80 rounded-2xl p-6 backdrop-blur-sm flex flex-col">
+            <div class="mb-5">
+              <h3 class="text-white font-black uppercase tracking-wider flex items-center gap-2 mb-1">
+                <svg class="w-5 h-5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                Top 5 Goleadores
+              </h3>
+              <p class="text-[9px] text-zinc-500 uppercase tracking-widest flex items-center gap-1">
+                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"/></svg>
+                Haz clic en un jugador para ver su detalle por equipo
+              </p>
+            </div>
             
             <div v-if="rankingPreview?.goleadores && rankingPreview.goleadores.length > 0" class="flex flex-col gap-3">
-              <div 
+              <button 
                 v-for="(item, index) in rankingPreview.goleadores.slice(0, 5)" 
                 :key="'gol-'+item.jugadorId"
-                class="flex items-center justify-between bg-zinc-950/50 border border-zinc-800/50 p-3 rounded-xl hover:border-amber-900/50 transition-colors"
+                @click="abrirDetalleJugador(item, 'puntos')"
+                class="w-full flex items-center justify-between bg-zinc-950/50 border border-zinc-800/50 p-3 rounded-xl hover:border-amber-500/50 hover:bg-zinc-900 transition-all text-left group cursor-pointer"
               >
                 <div class="flex items-center gap-4">
-                  <span 
-                    class="flex items-center justify-center w-8 h-8 rounded-lg text-xs font-black"
-                    :class="index === 0 ? 'bg-amber-500 text-zinc-900' : index === 1 ? 'bg-zinc-300 text-zinc-900' : index === 2 ? 'bg-amber-700 text-white' : 'bg-zinc-900 text-zinc-500'"
-                  >
+                  <span class="flex items-center justify-center w-8 h-8 rounded-lg text-xs font-black shrink-0" :class="index === 0 ? 'bg-amber-500 text-zinc-900' : index === 1 ? 'bg-zinc-300 text-zinc-900' : index === 2 ? 'bg-amber-700 text-white' : 'bg-zinc-900 text-zinc-500'">
                     {{ index + 1 }}
                   </span>
                   <div>
-                    <p class="text-zinc-100 font-bold text-sm uppercase">{{ item.nombre }}</p>
+                    <p class="text-zinc-100 font-bold text-sm uppercase group-hover:text-amber-500 transition-colors">{{ item.nombre }}</p>
                     <p class="text-zinc-500 text-[10px] font-black uppercase tracking-widest">{{ item.clubNombre }}</p>
                   </div>
                 </div>
-                <div class="text-right">
+                <div class="text-right shrink-0">
                   <span class="block text-xl font-black text-amber-500">{{ item.puntos }}</span>
                   <span class="block text-[9px] font-bold text-zinc-500 uppercase tracking-widest">Puntos</span>
                 </div>
-              </div>
+              </button>
             </div>
-            <div v-else class="text-center py-8 text-zinc-600 text-xs font-bold uppercase tracking-widest">
+            <div v-else class="text-center py-8 text-zinc-600 text-xs font-bold uppercase tracking-widest flex-1 flex items-center justify-center">
               Sin datos registrados
             </div>
           </div>
 
           <!-- Columna: Top Triples -->
-          <div class="bg-zinc-900/40 border border-zinc-800/80 rounded-2xl p-6 backdrop-blur-sm">
-            <h3 class="text-white font-black uppercase tracking-wider mb-6 flex items-center gap-2">
-              <svg class="w-5 h-5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
-              Top 5 Triples
-            </h3>
+          <div class="bg-zinc-900/40 border border-zinc-800/80 rounded-2xl p-6 backdrop-blur-sm flex flex-col">
+            <div class="mb-5">
+              <h3 class="text-white font-black uppercase tracking-wider flex items-center gap-2 mb-1">
+                <svg class="w-5 h-5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
+                Top 5 Triples
+              </h3>
+              <p class="text-[9px] text-zinc-500 uppercase tracking-widest flex items-center gap-1">
+                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"/></svg>
+                Haz clic en un jugador para ver su detalle por equipo
+              </p>
+            </div>
             
             <div v-if="rankingPreview?.triples && rankingPreview.triples.length > 0" class="flex flex-col gap-3">
-              <div 
+              <button 
                 v-for="(item, index) in rankingPreview.triples.slice(0, 5)" 
                 :key="'trip-'+item.jugadorId"
-                class="flex items-center justify-between bg-zinc-950/50 border border-zinc-800/50 p-3 rounded-xl hover:border-amber-900/50 transition-colors"
+                @click="abrirDetalleJugador(item, 'triples')"
+                class="w-full flex items-center justify-between bg-zinc-950/50 border border-zinc-800/50 p-3 rounded-xl hover:border-amber-500/50 hover:bg-zinc-900 transition-all text-left group cursor-pointer"
               >
                 <div class="flex items-center gap-4">
-                  <span 
-                    class="flex items-center justify-center w-8 h-8 rounded-lg text-xs font-black"
-                    :class="index === 0 ? 'bg-amber-500 text-zinc-900' : index === 1 ? 'bg-zinc-300 text-zinc-900' : index === 2 ? 'bg-amber-700 text-white' : 'bg-zinc-900 text-zinc-500'"
-                  >
+                  <span class="flex items-center justify-center w-8 h-8 rounded-lg text-xs font-black shrink-0" :class="index === 0 ? 'bg-amber-500 text-zinc-900' : index === 1 ? 'bg-zinc-300 text-zinc-900' : index === 2 ? 'bg-amber-700 text-white' : 'bg-zinc-900 text-zinc-500'">
                     {{ index + 1 }}
                   </span>
                   <div>
-                    <p class="text-zinc-100 font-bold text-sm uppercase">{{ item.nombre }}</p>
+                    <p class="text-zinc-100 font-bold text-sm uppercase group-hover:text-amber-500 transition-colors">{{ item.nombre }}</p>
                     <p class="text-zinc-500 text-[10px] font-black uppercase tracking-widest">{{ item.clubNombre }}</p>
                   </div>
                 </div>
-                <div class="text-right">
+                <div class="text-right shrink-0">
                   <span class="block text-xl font-black text-amber-500">{{ item.triples }}</span>
                   <span class="block text-[9px] font-bold text-zinc-500 uppercase tracking-widest">Triples</span>
                 </div>
-              </div>
+              </button>
             </div>
-            <div v-else class="text-center py-8 text-zinc-600 text-xs font-bold uppercase tracking-widest">
+            <div v-else class="text-center py-8 text-zinc-600 text-xs font-bold uppercase tracking-widest flex-1 flex items-center justify-center">
               Sin datos registrados
             </div>
           </div>
 
+        </div>     
+        
+        <!-- MODAL DETALLE DE JUGADOR -->
+        <div v-if="modalDetalle.abierto" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+          <div class="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-sm shadow-2xl flex flex-col max-h-[85vh] overflow-hidden">
+            
+            <!-- Cabecera del Modal -->
+            <div class="p-5 border-b border-zinc-800 bg-zinc-950/80 relative">
+              <button @click="modalDetalle.abierto = false" class="absolute top-4 right-4 text-zinc-500 hover:text-white transition-colors bg-zinc-900 p-1.5 rounded-lg border border-zinc-700">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+              </button>
+              <span class="text-[10px] font-black text-amber-500 uppercase tracking-widest mb-1 block">
+                Detalle de {{ modalDetalle.tipo === 'puntos' ? 'Puntos' : 'Triples' }} por Equipo
+              </span>
+              <h3 class="text-lg font-black text-white uppercase pr-8 leading-tight">{{ modalDetalle.jugador?.nombre }}</h3>
+              <p class="text-xs text-zinc-400 font-bold uppercase tracking-wider mt-1">{{ modalDetalle.jugador?.clubNombre }}</p>
+            </div>
+
+            <!-- Contenido / Lista de Rivales -->
+            <div class="p-4 overflow-y-auto flex-1 bg-zinc-900/50">
+              <div v-if="pendingDetalle" class="flex justify-center py-10">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500"></div>
+              </div>
+              
+              <div v-else-if="modalDetalle.estadisticas.length > 0" class="space-y-2">
+                <div 
+                  v-for="(stat, idx) in modalDetalle.estadisticas" 
+                  :key="idx" 
+                  class="flex items-center justify-between bg-zinc-950 border border-zinc-800 p-3 rounded-xl"
+                >
+                  <div class="flex items-center gap-3">
+                    <span class="text-[10px] font-black text-zinc-600 w-4 text-right">vs</span>
+                    <!-- Logo del Rival -->
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 bg-zinc-900 rounded-full flex items-center justify-center overflow-hidden border border-zinc-700 shrink-0 shadow-inner">
+                      <img v-if="stat.rivalLogo" :src="stat.rivalLogo" class="w-full h-full object-cover p-1" />
+                      <span v-else class="text-xs font-black text-zinc-500">{{ stat.rivalNombre.charAt(0) }}</span>
+                    </div>
+                    <!-- Nombre Rival: Visible solo en SM en adelante (oculto en móviles) -->
+                    <span class="hidden sm:block text-xs font-bold text-zinc-200 uppercase truncate max-w-[120px]">{{ stat.rivalNombre }}</span>
+                  </div>
+                  
+                  <div class="text-right">
+                    <span class="text-lg sm:text-xl font-black text-amber-500 block leading-none">{{ stat.cantidad }}</span>
+                    <span class="text-[8px] font-bold text-zinc-500 uppercase tracking-widest">{{ modalDetalle.tipo === 'puntos' ? 'PTS' : '3P' }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div v-else class="text-center py-10 text-zinc-500 text-xs font-bold uppercase tracking-widest">
+                No hay detalles disponibles
+              </div>
+            </div>
+          </div>
         </div>
+          
+        
 
         <!-- Botón Ver Todo (Puente a ranking.vue con categoría seleccionada) -->
         <div class="mt-10 flex justify-center">
@@ -582,6 +644,49 @@ const videosHome = ref([
     youtubeId: 'LyKNFcFESpg' 
   }
 ])
+
+// ==========================================
+// MODAL DETALLE DE JUGADOR (RANKING)
+// ==========================================
+const modalDetalle = ref({
+  abierto: false,
+  tipo: 'puntos' as 'puntos' | 'triples',
+  jugador: null as any,
+  estadisticas: [] as any[]
+})
+
+const pendingDetalle = ref(false)
+
+const abrirDetalleJugador = async (jugador: any, tipo: 'puntos' | 'triples') => {
+  // Preparamos el modal
+  modalDetalle.value.jugador = jugador
+  modalDetalle.value.tipo = tipo
+  modalDetalle.value.abierto = true
+  pendingDetalle.value = true
+  modalDetalle.value.estadisticas = [] // Limpiamos caché anterior
+
+  try {
+    // LLAMADA A LA API: Este endpoint debe recibir el ID del jugador, categoría y el tipo de dato requerido.
+    // Retorna un arreglo ej: [{ rivalNombre: 'Navidad', rivalLogo: 'url...', cantidad: 14 }, ...]
+    const data: any = await $fetch('/api/ranking/jugador-detalles', {
+      params: {
+        jugador_id: jugador.jugadorId,
+        categoria_id: categoriaRanking.value,
+        tipo: tipo
+      }
+    })
+    
+    // Si tienes los datos ordenados del backend excelente, si no, puedes ordenar aquí de mayor a menor
+    modalDetalle.value.estadisticas = data.sort((a: any, b: any) => b.cantidad - a.cantidad)
+  } catch (error) {
+    console.error('Error al cargar detalle de jugador:', error)
+    // En caso de que el endpoint aún no exista o falle
+    modalDetalle.value.estadisticas = [] 
+  } finally {
+    pendingDetalle.value = false
+  }
+}
+
 </script>
 
 <style>
