@@ -1,6 +1,14 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
+  app: {
+    head: {
+      link: [
+        // Asegura que el enlace al manifiesto de la PWA esté siempre presente.
+        { rel: 'manifest', href: '/manifest.webmanifest' }
+      ]
+    }
+  },
   modules: [
     '@nuxtjs/tailwindcss',
     '@vite-pwa/nuxt',
@@ -14,6 +22,7 @@ export default defineNuxtConfig({
       description: 'Plataforma oficial del campeonato de básquetbol de Curanilahue',
       theme_color: '#09090b', // Color de la barra de estado (zinc-950)
       background_color: '#09090b',
+      start_url: '/',
       display: 'standalone',
       orientation: 'portrait',
       lang: 'es-CL',
@@ -27,7 +36,22 @@ export default defineNuxtConfig({
           src: 'pwa-512x512.png', // Asegúrate de tener o colocar este ícono en la carpeta public/
           sizes: '512x512',
           type: 'image/png',
-          purpose: 'any maskable'
+          purpose: 'any'
+        }
+      ],
+      screenshots: [
+        {
+          "src": "/screenshots/mobile-screenshot-1.png",
+          "sizes": "540x720",
+          "type": "image/png",
+          "label": "Vista de la tabla de posiciones en móvil"
+        },
+        {
+          "src": "/screenshots/desktop-screenshot-1.png",
+          "sizes": "1280x720",
+          "type": "image/png",
+          "form_factor": "wide",
+          "label": "Vista del centro de partidos en escritorio"
         }
       ]
     },
