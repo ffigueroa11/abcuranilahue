@@ -46,7 +46,20 @@
 
     </div>
   </div>
+
+    <!-- Panel de Notificación de Transmisión -->
+  <section class="mt-12">
+    <h2 class="text-2xl font-black text-white uppercase tracking-tight mb-4">Notificación de Transmisión</h2>
+    <p class="text-zinc-400 text-sm mb-6">Envía una alerta a todos los dispositivos suscritos para informar sobre un partido en vivo.</p>
+    <div class="flex flex-col md:flex-row gap-6">
+      <div class="flex-1">
+        <NotificacionVivo />
+      </div>
+    </div>
+  </section>
+
 </template>
+
 
 <script setup lang="ts">
 definePageMeta({
@@ -59,4 +72,47 @@ const { data: stats, pending } = useFetch('/api/intranet/dashboard', {
   key: 'dashboard-stats',
   getCachedData: () => undefined
 })
+
+import { ref, computed } from 'vue'
+
+const formVivo = ref({
+  partido: '',
+  url: ''
+})
+
+const pendingNotified = ref(false)
+
+// Validación simple para no enviar alertas en blanco
+const formIncompleto = computed(() => {
+  return formVivo.value.partido.trim() === '' || formVivo.value.url.trim() === ''
+})
+
+const notificarVivo = async () => {
+  if (formIncompleto.value) return
+
+  // Confirmación por seguridad (para evitar clicks accidentales)
+  if (!confirm(`¿Estás seguro de enviar la notificación a todos los dispositivos?\n\nMensaje: ${formVivo.value.partido}`)) {
+    return
+  }
+
+  pendingNotified.value = true
+
+  try {
+    await $fetch('/api/notificaciones/enviar-vivo', {
+      method: 'POST',
+      body: formVivo.value
+    })
+    
+    alert('¡Alerta de transmisión enviada con éxito!')
+    
+    // Limpiamos el formulario después de enviar
+    formVivo.value.partido = ''
+    formVivo.value.url = ''
+  } catch (error) {
+    console.error('Error al notificar:', error)
+    alert('Ocurrió un error al intentar enviar la alerta.')
+  } finally {
+    pendingNotified.value = false
+  }
+}
 </script>

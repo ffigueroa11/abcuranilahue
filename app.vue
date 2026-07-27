@@ -9,5 +9,6 @@
       <PwaReloadPrompt />
       <InstallPwa />
     </ClientOnly>
+    <BannerNotificaciones />
   </div>
 </template>
