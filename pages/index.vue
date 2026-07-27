@@ -38,7 +38,7 @@
         </div>
       </div>
     </section>
-
+    
     <!-- Transmisión En Vivo -->
     <section v-if="partidoEnVivo" class="max-w-[1000px] mx-auto px-4 py-8 relative z-20 -mt-12 lg:-mt-24">
       <div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-2 sm:p-4 shadow-[0_0_50px_rgba(0,0,0,0.9)] relative overflow-hidden">
@@ -938,6 +938,22 @@ const abrirDetalleEquipo = async (equipoId: number, nombreEquipo: string) => {
     modalEquipo.value.pending = false
   }
 }
+
+const config = useRuntimeConfig()
+
+// 1. Transformar la llave VAPID (Obligatorio para que el navegador acepte la suscripción)
+const urlBase64ToUint8Array = (base64String: string) => {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4)
+  const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/')
+  const rawData = window.atob(base64)
+  const outputArray = new Uint8Array(rawData.length)
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i)
+  }
+  return outputArray
+}
+
+
 </script>
 
 <style>

@@ -1,4 +1,11 @@
 export default defineNuxtConfig({
+  runtimeConfig: {
+    vapidPrivateKey: process.env.VAPID_PRIVATE_KEY,
+    vapidSubject: process.env.VAPID_SUBJECT,
+    public: {
+      vapidPublicKey: process.env.VAPID_PUBLIC_KEY,
+    }
+  },
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
   app: {
@@ -83,8 +90,9 @@ export default defineNuxtConfig({
             }
           }
         }
-      ]
-    },
+      ],
+      importScripts: ['/push-sw.js'],
+    },    
     client: {
       installPrompt: true,
     },
