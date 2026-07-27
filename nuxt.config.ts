@@ -18,8 +18,8 @@ export default defineNuxtConfig({
     registerType: 'prompt',
     manifest: {
       name: 'Asociación de Básquetbol Curanilahue',
-      short_name: 'ABC Curanilahue',
-      description: 'Plataforma oficial del campeonato de básquetbol de Curanilahue',
+      short_name: 'A.B.Chue',
+      description: 'Plataforma oficial asociación de básquetbol de Curanilahue',
       theme_color: '#09090b', // Color de la barra de estado (zinc-950)
       background_color: '#09090b',
       start_url: '/',
