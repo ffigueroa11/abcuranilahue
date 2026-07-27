@@ -75,24 +75,21 @@ const formulario = ref({
 const errorMensaje = ref('')
 const cargando = ref(false)
 
-// Obtenemos una referencia reactiva a la cookie para poder actualizarla
-const authToken = useCookie('auth_token')
+// Usamos nuestro composable de autenticación
+const { user } = useAuth()
 
 const handleLogin = async () => {
   errorMensaje.value = ''
   cargando.value = true
 
   try {
-    // Usamos $fetch en lugar de useFetch para eventos de usuario
-    const response = await $fetch('/api/auth/login', {
+    const loggedInUser = await $fetch('/api/auth/login', {
       method: 'POST',
       body: formulario.value
     })
 
-    // Si la API responde correctamente (200 OK), response tendrá tus datos
-    // Actualizamos manualmente el estado de la cookie en el cliente.
-    // Esto asegura que el middleware `auth` lea el valor correcto inmediatamente.
-    authToken.value = response.token
+    // Actualizamos manualmente el estado de usuario compartido con la respuesta de la API.
+    user.value = loggedInUser
 
     // y forzamos la redirección usando await
     await navigateTo('/intranet/dashboard')

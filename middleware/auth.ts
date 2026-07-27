@@ -1,14 +1,23 @@
-export default defineNuxtRouteMiddleware((to, from) => {
-  // Leemos la cookie del token
-  const token = useCookie('auth_token')
+// middleware/auth.ts
+export default defineNuxtRouteMiddleware(async (to, from) => {
+  const { user, fetchUser } = useAuth()
 
-  // Si no hay token y la ruta no es el login, lo pateamos al login
-  if (!token.value && to.path !== '/intranet/login') {
-    return navigateTo('/intranet/login')
+  // Obtenemos el usuario. `fetchUser` solo se ejecutará una vez gracias a `useState`.
+  await fetchUser()
+
+  const isLoggedIn = !!user.value
+
+  // Rutas de la intranet
+  if (to.path.startsWith('/intranet') && to.path !== '/intranet/login') {
+    if (!isLoggedIn) {
+      // Si no está logueado y quiere entrar a la intranet, lo mandamos al login.
+      return navigateTo('/intranet/login')
+    }
   }
 
-  // Si ya tiene token y trata de entrar al login, lo enviamos al panel
-  if (token.value && to.path === '/intranet/login') {
+  // Página de login
+  if (to.path === '/intranet/login' && isLoggedIn) {
+    // Si ya está logueado y va al login, lo mandamos al dashboard.
     return navigateTo('/intranet/dashboard')
   }
 })

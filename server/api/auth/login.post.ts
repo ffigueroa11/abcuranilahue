@@ -42,7 +42,7 @@ export default defineEventHandler(async (event) => {
 
   // 5. Configurar la Cookie HttpOnly
   setCookie(event, 'auth_token', token, {
-    httpOnly: false, 
+    httpOnly: true, 
     secure: process.env.NODE_ENV === 'production', // Solo HTTPS en producción
     maxAge: 60 * 60 * 24 * 7, // 7 días en segundos
     path: '/' // Disponible en toda la aplicación
@@ -52,7 +52,6 @@ export default defineEventHandler(async (event) => {
   return {
     id: usuario.id,
     nombre: usuario.nombre,
-    rol: usuario.rol,
-    token: token // Devolvemos el token para que el cliente lo pueda usar
+    rol: usuario.rol
   }
 })
