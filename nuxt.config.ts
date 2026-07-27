@@ -43,9 +43,11 @@ export default defineNuxtConfig({
       runtimeCaching: [
         {
           // Estrategia para las peticiones a la API (posiciones, partidos, etc.)
-          // Usa StaleWhileRevalidate: muestra el contenido cacheado al instante
-          // y luego busca una nueva versión en segundo plano.
-          urlPattern: ({ url }) => url.pathname.startsWith('/api/'),
+          // Usa StaleWhileRevalidate para los datos públicos, pero excluye las rutas de autenticación
+          // para asegurar que siempre se obtenga el estado más reciente.
+          urlPattern: ({ url }) => 
+            url.pathname.startsWith('/api/') && 
+            !url.pathname.startsWith('/api/auth/'),
           handler: 'StaleWhileRevalidate',
           options: {
             cacheName: 'api-data-cache',
