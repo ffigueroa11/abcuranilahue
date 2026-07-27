@@ -131,7 +131,7 @@ const isMobileMenuOpen = ref(false);
       </div>
       <div class="max-w-[1400px] mx-auto px-4 border-t border-zinc-900 pt-8 flex flex-col sm:flex-row justify-between items-center text-xs text-zinc-600 relative z-10">
         <p>© 2026 ABCuranilahue. Todos los derechos reservados.</p>
-        <p class="mt-2 sm:mt-0">Desarrollo Plataforma Deportiva</p>
+        <p class="mt-2 sm:mt-0">Desarrollo por Francisco Figueroa</p>
       </div>
     </footer>   
   </div>
