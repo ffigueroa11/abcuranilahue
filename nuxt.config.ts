@@ -5,7 +5,9 @@ export default defineNuxtConfig({
     head: {
       link: [
         // Asegura que el enlace al manifiesto de la PWA esté siempre presente.
-        { rel: 'manifest', href: '/manifest.webmanifest' }
+        { rel: 'manifest', href: '/manifest.webmanifest' },
+        // Añade el favicon para que se muestre en la pestaña del navegador
+        { rel: 'icon', type: 'image/png', href: '/favicon.png' }
       ]
     }
   },
