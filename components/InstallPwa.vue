@@ -47,12 +47,15 @@ const isIOS = computed(() => {
 // Controlar si el prompt de iOS ha sido descartado por el usuario en la sesión actual
 const iosPromptDismissed = ref(false);
 
+// Detectar si la PWA se está ejecutando en modo standalone (instalada)
+const isStandalone = ref(false);
+
 // La UI de instalación se muestra si:
-// 1. Es iOS Y no ha sido descartado el prompt de iOS.
+// 1. Es iOS, NO está en modo standalone (instalada) Y no ha sido descartado el prompt.
 // 2. NO es iOS Y el prompt de instalación estándar está disponible Y la app no está ya instalada.
 const showInstallPromptUI = computed(() => {
   if (isIOS.value) {
-    return !iosPromptDismissed.value;
+    return !isStandalone.value && !iosPromptDismissed.value;
   } else {
     return $pwa?.showInstallPrompt && !$pwa.isPWAInstalled;
   }
@@ -67,6 +70,11 @@ const dismissIOSPrompt = () => {
 
 // Al montar el componente en el cliente, verificamos si el usuario ya ha descartado el prompt anteriormente.
 onMounted(() => {
+  // Comprobar si la PWA está en modo standalone
+  if (window.matchMedia('(display-mode: standalone)').matches) {
+    isStandalone.value = true;
+  }
+
   if (isIOS.value) {
     const dismissed = localStorage.getItem('ios-install-prompt-dismissed')
     if (dismissed === 'true') {
