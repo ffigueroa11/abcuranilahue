@@ -193,10 +193,23 @@
                     {{ pos.dif > 0 ? '+' + pos.dif : pos.dif }}
                   </td>
                   
-                  <td :class="['py-2 sm:py-3 text-center font-black text-xs sm:text-sm', index === 0 ? 'text-zinc-100' : 'text-zinc-300']">{{ pos.puntos }}</td>
+                  <!-- Columna PTS modificada con indicador FIBA -->
+                  <td :class="['py-2 sm:py-3 text-center font-black text-xs sm:text-sm', index === 0 ? 'text-zinc-100' : 'text-zinc-300']">
+                    {{ pos.puntos }}
+                    <span v-if="esEmpate(index)" class="text-amber-500 text-[10px] sm:text-xs ml-0.5 align-top" title="Desempate por Criterio FIBA">*</span>
+                  </td>
                 </tr>
               </tbody>
             </table>
+
+            <!-- LEYENDA FIBA (Aparece solo si hay empates) -->
+            <div v-if="hayEmpates" class="mt-4 border-t border-zinc-800/50 pt-3 flex items-start gap-1.5 text-[9px] sm:text-[10px] text-zinc-500">
+              <span class="text-amber-500 font-black mt-0.5 text-xs">*</span>
+              <p class="leading-tight">
+                El orden de los equipos empatados en puntos (PTS) se define por el <strong class="text-zinc-400">Reglamento FIBA</strong>: 1° Puntos en enfrentamientos directos, 2° Diferencia en enfrentamientos directos.
+              </p>
+            </div>
+
           </div>
           
           <div v-else class="text-center py-8 text-zinc-600 text-xs font-bold uppercase tracking-widest">
@@ -756,6 +769,28 @@ const selectedCategoriaNombre = computed(() => {
 const { data: posiciones, pending: pendingPos } = useFetch('/api/posiciones', {
   query: { categoriaId: selectedCategoriaId }
 })
+
+// ==========================================
+// LÓGICA DE DETECCIÓN DE EMPATES FIBA
+// ==========================================
+const hayEmpates = computed(() => {
+  if (!posiciones.value) return false
+  const puntosArray = posiciones.value.map((p: any) => p.puntos)
+  const setPuntos = new Set(puntosArray)
+  // Si el Set es más pequeño que el array original, significa que hay puntajes repetidos
+  return setPuntos.size !== puntosArray.length 
+})
+
+const esEmpate = (index: number) => {
+  if (!posiciones.value) return false
+  const ptsActual = posiciones.value[index].puntos
+  // Comparamos los puntos del equipo actual con el de arriba y el de abajo
+  const ptsAnterior = index > 0 ? posiciones.value[index - 1].puntos : null
+  const ptsSiguiente = index < posiciones.value.length - 1 ? posiciones.value[index + 1].puntos : null
+  
+  return ptsActual === ptsAnterior || ptsActual === ptsSiguiente
+}
+// ==========================================
 
 const { data: proximosPartidos, pending: pendingPartidos } = useFetch('/api/partidos/proximos', {
   query: { categoriaId: selectedCategoriaId }
