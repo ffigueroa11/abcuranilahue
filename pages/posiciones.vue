@@ -61,7 +61,11 @@
           
           <!-- CONTENEDOR SCROLLEABLE (SOLO PARA LA TABLA) -->
           <div class="overflow-x-auto scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
-            <table class="w-full text-sm min-w-[500px]">
+            <!-- MEJORA: Se añade un fondo a la tabla para evitar glitches de renderizado.
+                 Al hacer que la base de la tabla sea opaca, se previene que el contenido de las celdas
+                 que se desplazan se "filtre" visualmente por debajo de las columnas fijas en
+                 algunos navegadores. -->
+            <table class="w-full text-sm min-w-[500px] bg-zinc-900">
               <thead class="text-[10px] text-zinc-500 uppercase tracking-widest border-b border-zinc-800">
                 <tr>
                   <!-- Columna POSición Fija -->
