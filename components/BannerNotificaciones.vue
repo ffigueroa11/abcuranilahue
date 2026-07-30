@@ -75,6 +75,7 @@ const urlBase64ToUint8Array = (base64String: string) => {
 onMounted(() => {
   // Detección de dispositivos Apple
   const userAgent = window.navigator.userAgent.toLowerCase()
+  if (userAgent.indexOf('instagram') > -1) return
   const isIOS = /iphone|ipad|ipod/.test(userAgent) || (window.navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches || ('standalone' in window.navigator && window.navigator.standalone === true)
 
