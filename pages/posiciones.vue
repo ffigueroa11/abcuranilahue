@@ -52,7 +52,7 @@
       </div>
 
       <!-- Tabla de Clasificación -->
-      <div class="bg-zinc-900/60 border border-zinc-800/80 rounded-xl p-4 sm:p-6 shadow-xl backdrop-blur-sm overflow-hidden">
+      <div class="bg-zinc-900/60 border border-zinc-800/80 rounded-xl p-4 sm:p-6 shadow-xl backdrop-blur-sm">
         <div v-if="pendingPos" class="flex justify-center py-16">
           <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500"></div>
         </div>
@@ -77,13 +77,13 @@
                 </tr>
               </thead>
               <tbody class="divide-y divide-zinc-800/50">
-                <tr v-for="(pos, index) in posicionesFiltradas" :key="pos.id" class="hover:bg-zinc-800/30 transition-colors">
+                <tr v-for="(pos, index) in posicionesFiltradas" :key="pos.id" class="group">
                   
                   <!-- Celda POS Fija -->
-                  <td :class="['sticky left-0 bg-zinc-900 z-10 py-4 font-black pl-2', index === 0 ? 'text-amber-500' : 'text-zinc-500']">{{ index + 1 }}</td>
+                  <td :class="['sticky left-0 bg-zinc-900 group-hover:bg-zinc-800 z-10 py-4 font-black pl-2 transition-colors', index === 0 ? 'text-amber-500' : 'text-zinc-500']">{{ index + 1 }}</td>
                   
                   <!-- Celda EQUIPO Fija con sombra -->
-                  <td class="sticky left-10 bg-zinc-900 z-10 py-4 font-bold flex items-center gap-3 shadow-[10px_0_15px_-5px_rgba(0,0,0,0.5)] pr-2">
+                  <td class="sticky left-10 bg-zinc-900 group-hover:bg-zinc-800 z-10 py-4 font-bold flex items-center gap-3 shadow-[10px_0_15px_-5px_rgba(0,0,0,0.5)] pr-2 transition-colors">
                     <div class="w-8 h-8 bg-zinc-800 rounded-full flex items-center justify-center overflow-hidden border border-zinc-700 flex-shrink-0">
                       <img v-if="pos.club.logo_url" :src="pos.club.logo_url" class="w-full h-full object-cover p-0.5" />
                       <span v-else class="text-[10px] text-zinc-400">{{ pos.club.nombre.charAt(0) }}</span>
@@ -92,13 +92,13 @@
                   </td>
                   
                   <!-- El resto de las columnas normales -->
-                  <td class="py-4 text-center text-zinc-400 text-xs">{{ pos.pj }}</td>
-                  <td class="py-4 text-center text-zinc-400 text-xs">{{ pos.pg }}</td>
-                  <td class="py-4 text-center text-zinc-400 text-xs">{{ pos.pp }}</td>
-                  <td :class="['py-4 text-center text-xs font-medium', pos.dif > 0 ? 'text-green-500/80' : (pos.dif < 0 ? 'text-red-500/80' : 'text-zinc-500')]">
+                  <td class="py-4 text-center text-zinc-400 text-xs group-hover:bg-zinc-800 transition-colors">{{ pos.pj }}</td>
+                  <td class="py-4 text-center text-zinc-400 text-xs group-hover:bg-zinc-800 transition-colors">{{ pos.pg }}</td>
+                  <td class="py-4 text-center text-zinc-400 text-xs group-hover:bg-zinc-800 transition-colors">{{ pos.pp }}</td>
+                  <td :class="['py-4 text-center text-xs font-medium group-hover:bg-zinc-800 transition-colors', pos.dif > 0 ? 'text-green-500/80' : (pos.dif < 0 ? 'text-red-500/80' : 'text-zinc-500')]">
                     {{ pos.dif > 0 ? '+' + pos.dif : pos.dif }}
                   </td>
-                  <td :class="['py-4 text-center font-black text-base', index === 0 ? 'text-amber-500' : 'text-zinc-100']">
+                  <td :class="['py-4 text-center font-black text-base group-hover:bg-zinc-800 transition-colors', index === 0 ? 'text-amber-500' : 'text-zinc-100']">
                     {{ pos.puntos }}
                     <span v-if="esEmpate(index)" class="text-amber-500 text-[10px] sm:text-xs ml-0.5 align-top" title="Desempate por Criterio FIBA">*</span>
                   </td>

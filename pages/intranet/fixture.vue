@@ -219,10 +219,38 @@ import { ref } from 'vue'
 
 definePageMeta({ layout: 'intranet', middleware: 'auth' })
 
+// --- MEJORA: Tipado de Datos ---
+// Definir interfaces claras para las estructuras de datos mejora la legibilidad,
+// el autocompletado y la seguridad de tipos, evitando errores comunes con `any`.
+interface Club {
+  id: number;
+  nombre: string;
+  logo_url: string | null;
+}
+
+interface Categoria {
+  id: number;
+  nombre: string;
+}
+
+interface Partido {
+  id: number;
+  jornada: number;
+  fecha_hora: string;
+  estado: 'PROGRAMADO' | 'FINALIZADO';
+  score_local: number | null;
+  score_visita: number | null;
+  planilla_cuadrada: boolean;
+  categoria_id: number;
+  categoria: Categoria;
+  local: Club;
+  visita: Club;
+}
+
 // Carga de datos base necesarios para el formulario y la lista
-const { data: partidos, pending: pendingFixture, refresh } = useFetch('/api/intranet/fixture')
-const { data: clubes } = useFetch('/api/intranet/clubes')
-const { data: categorias } = useFetch('/api/intranet/categorias')
+const { data: partidos, pending: pendingFixture, refresh } = useFetch<Partido[]>('/api/intranet/fixture')
+const { data: clubes } = useFetch<Club[]>('/api/intranet/clubes')
+const { data: categorias } = useFetch<Categoria[]>('/api/intranet/categorias')
 
 const filtros = ref({
   categoria: 'todas' as number | 'todas',
@@ -233,7 +261,7 @@ const filtros = ref({
 const partidosFiltrados = computed(() => {
   if (!partidos.value) return []
 
-  return partidos.value.filter((p: any) => {
+  return partidos.value.filter((p) => {
     // 1. Filtro por Categoría
     if (filtros.value.categoria !== 'todas' && p.categoria_id !== filtros.value.categoria) {
       return false
@@ -288,7 +316,7 @@ const formatearFecha = (fechaString: string) => {
 const guardarPartido = async () => {
   guardando.value = true
   try {
-    const nuevoPartido: any = await $fetch('/api/intranet/fixture', {
+    const nuevoPartido = await $fetch<Partido>('/api/intranet/fixture', {
       method: 'POST',
       body: formulario.value
     })
@@ -299,7 +327,7 @@ const guardarPartido = async () => {
     if (partidos.value) {
       partidos.value.push(nuevoPartido)
       // Re-ordenamos localmente por fecha
-      partidos.value.sort((a: any, b: any) => new Date(a.fecha_hora).getTime() - new Date(b.fecha_hora).getTime())
+      partidos.value.sort((a, b) => new Date(a.fecha_hora).getTime() - new Date(b.fecha_hora).getTime())
     } else {
       await refresh()
     }

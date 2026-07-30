@@ -1,5 +1,5 @@
 <template>
-  <div v-if="showInstallPromptUI" class="fixed bottom-24 sm:bottom-4 left-4 z-50 animate-fade-in-up">
+  <div v-if="showInstallPromptUI" class="fixed bottom-24 sm:bottom-4 left-4 z-[60] animate-fade-in-up">
     <div v-if="isIOS" class="bg-zinc-800 border border-zinc-700 text-zinc-200 p-4 rounded-lg shadow-xl max-w-xs">
       <p class="text-sm font-medium mb-2">
         Para instalar esta aplicación, haz clic en el botón
@@ -34,6 +34,8 @@ import { computed, ref, onMounted } from 'vue'
 
 // `useNuxtApp` es la forma correcta de acceder a los plugins de Nuxt en <script setup>
 const { $pwa } = useNuxtApp()
+// Se obtiene el objeto de la ruta para poder aplicar lógica condicional
+const route = useRoute()
 
 // Detectar si es iOS
 const isIOS = computed(() => {
@@ -54,6 +56,12 @@ const isStandalone = ref(false);
 // 1. Es iOS, NO está en modo standalone (instalada) Y no ha sido descartado el prompt.
 // 2. NO es iOS Y el prompt de instalación estándar está disponible Y la app no está ya instalada.
 const showInstallPromptUI = computed(() => {
+  // --- MEJORA: Ocultar en la intranet ---
+  // No queremos mostrar el botón de instalación dentro del panel de administración.
+  if (route.path.startsWith('/intranet')) {
+    return false;
+  }
+
   if (isIOS.value) {
     return !isStandalone.value && !iosPromptDismissed.value;
   } else {

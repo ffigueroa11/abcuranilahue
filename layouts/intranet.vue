@@ -113,19 +113,23 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
+// --- MEJORA: Centralización de Lógica de Auth ---
+// Se utiliza el composable `useAuth` para la lógica de logout.
+// Esto asegura que toda la limpieza de estado (cookie en servidor, estado en cliente, caché de Nuxt)
+// se ejecute de forma consistente, en lugar de duplicar la lógica.
+const { logout } = useAuth()
 const isSidebarOpen = ref(false)
 const cargando = ref(false)
 
 const handleLogout = async () => {
   cargando.value = true
   try {
-    await useFetch('/api/auth/logout', { method: 'POST' })
-    // Al limpiar la cookie, redirigimos al login
-    navigateTo('/intranet/login')
+    // La función logout del composable ya maneja la llamada a la API,
+    // la limpieza del estado y la redirección.
+    await logout()
   } catch (error) {
-    console.error('Error al cerrar sesión', error)
-  } finally {
-    cargando.value = false
+    console.error('Error al cerrar sesión:', error)
+    cargando.value = false // Resetear estado en caso de que el logout falle y no redirija
   }
 }
 </script>
