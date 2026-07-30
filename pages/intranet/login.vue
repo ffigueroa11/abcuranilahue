@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-zinc-950 flex items-center justify-center p-4 relative overflow-hidden">
+  <div class="min-h-[100dvh] bg-zinc-950 flex items-center justify-center p-4 relative overflow-hidden">
     <!-- Fondos decorativos -->
     <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-red-900/10 blur-[120px] rounded-full pointer-events-none"></div>
     <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-amber-900/10 blur-[120px] rounded-full pointer-events-none"></div>

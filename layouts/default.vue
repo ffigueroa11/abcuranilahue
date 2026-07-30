@@ -3,7 +3,7 @@ const isMobileMenuOpen = ref(false);
 </script>
 
 <template>
-  <div class="min-h-screen bg-zinc-950 font-sans text-zinc-100 selection:bg-amber-600 selection:text-white">
+  <div class="min-h-[100dvh] bg-zinc-950 font-sans text-zinc-100 selection:bg-amber-600 selection:text-white">
     <!-- Navbar Premium ABC -->
     <nav class="bg-zinc-950/80 backdrop-blur-md sticky top-0 z-50 border-b border-zinc-800 shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
       <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">

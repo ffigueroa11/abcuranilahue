@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-zinc-950 text-zinc-100 flex overflow-hidden font-sans selection:bg-amber-600 selection:text-white">
+  <div class="min-h-[100dvh] bg-zinc-950 text-zinc-100 flex overflow-hidden font-sans selection:bg-amber-600 selection:text-white">
     
     <!-- Sidebar Desktop & Mobile -->
     <aside 

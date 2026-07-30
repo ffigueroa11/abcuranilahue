@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-zinc-950 pb-20">
+  <div class="min-h-[100dvh] bg-zinc-950 pb-20">
     <!-- Header de la página -->
     <div class="bg-zinc-900 border-b border-zinc-800 pt-24 pb-12 px-4 relative overflow-hidden">
       <div class="absolute top-0 right-0 w-64 h-64 bg-blue-900/10 blur-[100px] rounded-full pointer-events-none"></div>
