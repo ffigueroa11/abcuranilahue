@@ -203,11 +203,22 @@
             </table>
 
             <!-- LEYENDA FIBA (Aparece solo si hay empates) -->
-            <div v-if="hayEmpates" class="mt-4 border-t border-zinc-800/50 pt-3 flex items-start gap-1.5 text-[9px] sm:text-[10px] text-zinc-500">
-              <span class="text-amber-500 font-black mt-0.5 text-xs">*</span>
-              <p class="leading-tight">
-                El orden de los equipos empatados en puntos (PTS) se define por el <strong class="text-zinc-400">Reglamento FIBA</strong>: 1° Puntos en enfrentamientos directos, 2° Diferencia en enfrentamientos directos.
-              </p>
+            <!-- LEYENDA FIBA (Aparece solo si hay empates) -->
+            <div v-if="hayEmpates" class="mt-4 border-t border-zinc-800/50 pt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-[9px] sm:text-[10px] text-zinc-500">
+              <div class="flex items-start gap-1.5">
+                <span class="text-amber-500 font-black mt-0.5 text-xs">*</span>
+                <p class="leading-tight">
+                  El orden de los equipos empatados en puntos (PTS) se define por el <strong class="text-zinc-400">Reglamento FIBA</strong>.
+                </p>
+              </div>
+              
+              <button 
+                @click="abrirModalFiba = true"
+                class="flex items-center justify-center w-full sm:w-auto gap-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-4 py-2 sm:py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-colors shrink-0 shadow-sm border border-zinc-700"
+              >
+                <svg class="w-3.5 h-3.5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                Ver Detalle Desempate
+              </button>
             </div>
 
           </div>
@@ -745,6 +756,77 @@
         </div>
       </div>
     </div>
+    <!-- MODAL: DETALLE DESEMPATE FIBA -->
+    <div v-if="abrirModalFiba" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+      <div class="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-2xl shadow-2xl flex flex-col max-h-[85vh] overflow-hidden relative">
+        
+        <!-- Header -->
+        <div class="p-5 border-b border-zinc-800 bg-zinc-950/80 relative flex-shrink-0">
+          <button @click="abrirModalFiba = false" class="absolute top-4 right-4 text-zinc-500 hover:text-white transition-colors bg-zinc-900 p-1.5 rounded-lg border border-zinc-700">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+          <span class="text-[10px] font-black text-amber-500 uppercase tracking-widest mb-1 block">
+            Criterios FIBA
+          </span>
+          <h3 class="text-lg font-black text-white uppercase pr-8 leading-tight">Resolución de Empates</h3>
+          <p class="text-[10px] sm:text-xs text-zinc-400 font-bold mt-1">
+            Rendimiento exclusivo en enfrentamientos directos entre equipos con el mismo puntaje.
+          </p>
+        </div>
+
+        <!-- Contenido (Scrollable) -->
+        <div class="p-4 sm:p-6 overflow-y-auto flex-1 bg-zinc-900/50">
+          <div v-if="gruposEmpatados.length === 0" class="text-center py-8 text-zinc-500 text-xs uppercase font-bold tracking-widest">
+            No hay información detallada.
+          </div>
+          
+          <div v-else class="space-y-6">
+            <div v-for="grupo in gruposEmpatados" :key="grupo.puntos" class="bg-zinc-950 border border-zinc-800 rounded-xl overflow-hidden shadow-lg">
+              <div class="bg-zinc-900 border-b border-zinc-800 px-4 py-2.5">
+                <h4 class="text-xs font-black text-amber-500 uppercase tracking-widest">Empate a {{ grupo.puntos }} Puntos</h4>
+              </div>
+              <div class="overflow-x-auto scrollbar-hide">
+                <table class="w-full text-left text-[10px] sm:text-xs text-zinc-300">
+                  <thead class="bg-zinc-950/50 text-[9px] sm:text-[10px] text-zinc-500 uppercase tracking-widest border-b border-zinc-800">
+                    <tr>
+                      <th class="px-3 sm:px-4 py-3 font-black">Equipo</th>
+                      <th class="px-2 py-3 font-black text-center" title="Puntos en Partidos Directos">PTS (H2H)</th>
+                      <th class="px-2 py-3 font-black text-center" title="Diferencia de Puntos en Partidos Directos">DIF (H2H)</th>
+                      <th class="px-3 sm:px-4 py-3 font-black text-center" title="Diferencia General en el Campeonato">DIF (Gen)</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-zinc-800/50">
+                    <tr v-for="equipo in grupo.equipos" :key="equipo.id" class="hover:bg-zinc-900/50 transition-colors">
+                      <td class="px-3 sm:px-4 py-3 font-bold flex items-center gap-2">
+                         <div class="w-5 h-5 bg-zinc-800 rounded-full flex items-center justify-center overflow-hidden shrink-0 border border-zinc-700">
+                           <img v-if="equipo.club.logo_url" :src="equipo.club.logo_url" class="w-full h-full object-cover p-0.5" />
+                           <span v-else class="text-[8px]">{{ equipo.club.nombre.charAt(0) }}</span>
+                         </div>
+                         <span class="truncate max-w-[100px] sm:max-w-[150px] uppercase text-zinc-200">{{ equipo.club.nombre }}</span>
+                      </td>
+                      <td class="px-2 py-3 text-center font-black text-white">{{ equipo.ptsH2H ?? '-' }}</td>
+                      <td class="px-2 py-3 text-center font-bold" :class="equipo.difH2H > 0 ? 'text-green-500' : (equipo.difH2H < 0 ? 'text-red-500' : 'text-zinc-500')">
+                        {{ equipo.difH2H > 0 ? '+'+equipo.difH2H : (equipo.difH2H ?? '-') }}
+                      </td>
+                      <td class="px-3 sm:px-4 py-3 text-center font-medium">{{ equipo.dif > 0 ? '+'+equipo.dif : equipo.dif }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-8 text-[9px] sm:text-[10px] text-zinc-400 bg-zinc-900/80 border border-zinc-800 p-4 rounded-xl leading-relaxed">
+            <strong class="text-zinc-200 block mb-2 uppercase tracking-widest text-xs">Glosario de Desempate:</strong>
+            <ul class="list-disc pl-4 space-y-1.5">
+              <li><strong class="text-amber-500">PTS (H2H):</strong> Puntos obtenidos <span class="underline">exclusivamente</span> en los partidos jugados contra los otros equipos empatados (Criterio 1).</li>
+              <li><strong class="text-amber-500">DIF (H2H):</strong> Diferencia de puntos a favor y en contra solo en los duelos entre los equipos empatados (Criterio 2).</li>
+              <li><strong class="text-amber-500">DIF (Gen):</strong> Diferencia de puntos general de todo el campeonato (Criterio 3).</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -777,19 +859,45 @@ const hayEmpates = computed(() => {
   if (!posiciones.value) return false
   const puntosArray = posiciones.value.map((p: any) => p.puntos)
   const setPuntos = new Set(puntosArray)
-  // Si el Set es más pequeño que el array original, significa que hay puntajes repetidos
   return setPuntos.size !== puntosArray.length 
 })
 
 const esEmpate = (index: number) => {
   if (!posiciones.value) return false
   const ptsActual = posiciones.value[index].puntos
-  // Comparamos los puntos del equipo actual con el de arriba y el de abajo
   const ptsAnterior = index > 0 ? posiciones.value[index - 1].puntos : null
   const ptsSiguiente = index < posiciones.value.length - 1 ? posiciones.value[index + 1].puntos : null
   
   return ptsActual === ptsAnterior || ptsActual === ptsSiguiente
 }
+
+// NUEVO: Control del modal y agrupación
+const abrirModalFiba = ref(false)
+
+const gruposEmpatados = computed(() => {
+  if (!posiciones.value) return []
+  
+  // 1. Agrupamos todos los equipos por puntaje
+  const grupos = {} as Record<number, any[]>
+  posiciones.value.forEach((pos: any) => {
+    if (!grupos[pos.puntos]) grupos[pos.puntos] = []
+    grupos[pos.puntos].push(pos)
+  })
+  
+  // 2. Filtramos solo los grupos que tienen empate y estructuramos para el v-for
+  const resultado = []
+  for (const pts in grupos) {
+    if (grupos[pts].length > 1) {
+      resultado.push({
+        puntos: Number(pts),
+        equipos: grupos[pts]
+      })
+    }
+  }
+  
+  // 3. Ordenamos de mayor a menor puntaje (para que los líderes empatados salgan primero)
+  return resultado.sort((a, b) => b.puntos - a.puntos)
+})
 // ==========================================
 
 const { data: proximosPartidos, pending: pendingPartidos } = useFetch('/api/partidos/proximos', {
@@ -799,6 +907,8 @@ const { data: proximosPartidos, pending: pendingPartidos } = useFetch('/api/part
 const { data: ultimosPartidos, pending: pendingUltimos } = useFetch('/api/partidos/ultimos', {
   query: { categoriaId: selectedCategoriaId }
 })
+
+
 
 // ==========================================
 // RANKING PREVIEW (Corregido sin valores nulos iniciales)

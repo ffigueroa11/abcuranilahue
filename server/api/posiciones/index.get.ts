@@ -94,10 +94,9 @@ export default defineEventHandler(async (event) => {
       return 0
     })
 
-    // Limpiamos las variables temporales (H2H) para que el frontend reciba un objeto limpio y lo agregamos a la tabla final
+    // Mantenemos la data H2H para que el frontend pueda explicar el desempate en el Modal
     miniTabla.forEach(e => {
-      const { ptsH2H, difH2H, ...original } = e
-      tablaFinal.push(original)
+      tablaFinal.push(e)
     })
   }
 
