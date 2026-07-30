@@ -65,9 +65,9 @@
               <thead class="text-[10px] text-zinc-500 uppercase tracking-widest border-b border-zinc-800">
                 <tr>
                   <!-- Columna POSición Fija -->
-                  <th class="sticky left-0 bg-zinc-900 z-10 text-left font-black pb-3 pl-2 w-10">POS</th>
+                  <th class="sticky left-0 bg-zinc-900 z-20 text-left font-black pb-3 pl-2 w-10">POS</th>
                   <!-- Columna EQUIPO Fija (Le damos sombra a la derecha para separar visualmente) -->
-                  <th class="sticky left-10 bg-zinc-900 z-10 text-left font-black pb-3 shadow-[10px_0_15px_-5px_rgba(0,0,0,0.5)]">EQUIPO</th>
+                  <th class="sticky left-10 bg-zinc-900 z-10 text-left font-black pb-3 shadow-[10px_0_15px_-5px_rgba(0,0,0,0.5)] pr-2">EQUIPO</th>
                   
                   <th class="text-center font-black pb-3 w-12">PJ</th>
                   <th class="text-center font-black pb-3 w-12">PG</th>
@@ -80,7 +80,7 @@
                 <tr v-for="(pos, index) in posicionesFiltradas" :key="pos.id" class="group">
                   
                   <!-- Celda POS Fija -->
-                  <td :class="['sticky left-0 bg-zinc-900 group-hover:bg-zinc-800 z-10 py-4 font-black pl-2 transition-colors', index === 0 ? 'text-amber-500' : 'text-zinc-500']">{{ index + 1 }}</td>
+                  <td :class="['sticky left-0 bg-zinc-900 group-hover:bg-zinc-800 z-20 py-4 font-black pl-2 w-10 transition-colors', index === 0 ? 'text-amber-500' : 'text-zinc-500']">{{ index + 1 }}</td>
                   
                   <!-- Celda EQUIPO Fija con sombra -->
                   <td class="sticky left-10 bg-zinc-900 group-hover:bg-zinc-800 z-10 py-4 font-bold flex items-center gap-3 shadow-[10px_0_15px_-5px_rgba(0,0,0,0.5)] pr-2 transition-colors">
