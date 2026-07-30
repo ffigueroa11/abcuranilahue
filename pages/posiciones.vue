@@ -64,8 +64,11 @@
             <table class="w-full text-sm min-w-[500px]">
               <thead class="text-[10px] text-zinc-500 uppercase tracking-widest border-b border-zinc-800">
                 <tr>
-                  <th class="text-left font-black pb-3 w-10">POS</th>
-                  <th class="text-left font-black pb-3">EQUIPO</th>
+                  <!-- Columna POSición Fija -->
+                  <th class="sticky left-0 bg-zinc-900 z-10 text-left font-black pb-3 pl-2 w-10">POS</th>
+                  <!-- Columna EQUIPO Fija (Le damos sombra a la derecha para separar visualmente) -->
+                  <th class="sticky left-10 bg-zinc-900 z-10 text-left font-black pb-3 shadow-[10px_0_15px_-5px_rgba(0,0,0,0.5)]">EQUIPO</th>
+                  
                   <th class="text-center font-black pb-3 w-12">PJ</th>
                   <th class="text-center font-black pb-3 w-12">PG</th>
                   <th class="text-center font-black pb-3 w-12">PP</th>
@@ -75,21 +78,26 @@
               </thead>
               <tbody class="divide-y divide-zinc-800/50">
                 <tr v-for="(pos, index) in posicionesFiltradas" :key="pos.id" class="hover:bg-zinc-800/30 transition-colors">
-                  <td :class="['py-4 font-black', index === 0 ? 'text-amber-500' : 'text-zinc-500']">{{ index + 1 }}</td>
-                  <td class="py-4 font-bold flex items-center gap-3">
+                  
+                  <!-- Celda POS Fija -->
+                  <td :class="['sticky left-0 bg-zinc-900 z-10 py-4 font-black pl-2', index === 0 ? 'text-amber-500' : 'text-zinc-500']">{{ index + 1 }}</td>
+                  
+                  <!-- Celda EQUIPO Fija con sombra -->
+                  <td class="sticky left-10 bg-zinc-900 z-10 py-4 font-bold flex items-center gap-3 shadow-[10px_0_15px_-5px_rgba(0,0,0,0.5)] pr-2">
                     <div class="w-8 h-8 bg-zinc-800 rounded-full flex items-center justify-center overflow-hidden border border-zinc-700 flex-shrink-0">
-                       <img v-if="pos.club.logo_url" :src="pos.club.logo_url" class="w-full h-full object-cover p-0.5" />
-                       <span v-else class="text-[10px] text-zinc-400">{{ pos.club.nombre.charAt(0) }}</span>
+                      <img v-if="pos.club.logo_url" :src="pos.club.logo_url" class="w-full h-full object-cover p-0.5" />
+                      <span v-else class="text-[10px] text-zinc-400">{{ pos.club.nombre.charAt(0) }}</span>
                     </div> 
                     <span :class="['truncate', index === 0 ? 'text-zinc-100 font-black' : 'text-zinc-300']">{{ pos.club.nombre }}</span>
                   </td>
+                  
+                  <!-- El resto de las columnas normales -->
                   <td class="py-4 text-center text-zinc-400 text-xs">{{ pos.pj }}</td>
                   <td class="py-4 text-center text-zinc-400 text-xs">{{ pos.pg }}</td>
                   <td class="py-4 text-center text-zinc-400 text-xs">{{ pos.pp }}</td>
                   <td :class="['py-4 text-center text-xs font-medium', pos.dif > 0 ? 'text-green-500/80' : (pos.dif < 0 ? 'text-red-500/80' : 'text-zinc-500')]">
                     {{ pos.dif > 0 ? '+' + pos.dif : pos.dif }}
                   </td>
-                  <!-- Columna de Puntos con Marcador de Empate -->
                   <td :class="['py-4 text-center font-black text-base', index === 0 ? 'text-amber-500' : 'text-zinc-100']">
                     {{ pos.puntos }}
                     <span v-if="esEmpate(index)" class="text-amber-500 text-[10px] sm:text-xs ml-0.5 align-top" title="Desempate por Criterio FIBA">*</span>

@@ -5,12 +5,12 @@
     </NuxtLayout>
 
     <!-- Componentes PWA solo se renderizan en el cliente -->
-
-    <ClientOnly>
-      <AvisoInstagram />
+    <AvisoInstagram />
+    <ClientOnly>      
       <PwaReloadPrompt />
       <InstallPwa />
     </ClientOnly>
     <BannerNotificaciones />
+    <NavegacionMovil />
   </div>
 </template>
