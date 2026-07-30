@@ -1,5 +1,5 @@
 <template>
-  <div v-if="showInstallPromptUI" class="fixed bottom-4 left-4 z-50 animate-fade-in-up">
+  <div v-if="showInstallPromptUI" class="fixed bottom-24 sm:bottom-4 left-4 z-50 animate-fade-in-up">
     <div v-if="isIOS" class="bg-zinc-800 border border-zinc-700 text-zinc-200 p-4 rounded-lg shadow-xl max-w-xs">
       <p class="text-sm font-medium mb-2">
         Para instalar esta aplicación, haz clic en el botón
