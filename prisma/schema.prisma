@@ -16,6 +16,7 @@ model Categoria {
   jugadores  Jugador[]       // Relación muchos a muchos implícita (Nuxt/Prisma la maneja sola)
   partidos   Partido[]
   posiciones TablaPosicion[]
+  borradores FixtureBorrador[]
 }
 
 model Club {
@@ -30,6 +31,9 @@ model Club {
   // NUEVO: Relación a la tabla de posiciones
   posiciones  TablaPosicion[]
   usuario     Usuario?  
+
+  borradoresLocal FixtureBorrador[] @relation("BorradorLocal")
+  borradoresVisita FixtureBorrador[] @relation("BorradorVisita")
 }
 
 model Jugador {
@@ -138,4 +142,21 @@ model Usuario {
   
   activo        Boolean  @default(true)
   created_at    DateTime @default(now())
+}
+
+model FixtureBorrador {
+  id               Int      @id @default(autoincrement())
+  codigo_lote      String   // Identificador único para agrupar esta generación
+  categoria_id     Int
+  local_id         Int
+  visita_id        Int
+  fecha_hora       DateTime
+  estado           String   @default("BORRADOR")
+
+  // Relaciones (Asegúrate de que los nombres de los modelos coincidan con los tuyos)
+  categoria        Categoria @relation(fields: [categoria_id], references: [id])
+  local            Club      @relation("BorradorLocal", fields: [local_id], references: [id])
+  visita           Club      @relation("BorradorVisita", fields: [visita_id], references: [id])
+
+  createdAt        DateTime  @default(now())
 }

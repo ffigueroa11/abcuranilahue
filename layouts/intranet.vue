@@ -61,6 +61,28 @@
           <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
           Ranking y Goleadores
         </NuxtLink>
+
+        <NuxtLink 
+          to="/intranet/programacion" 
+          class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold tracking-wide transition-all"
+          active-class="bg-amber-900/20 text-amber-500 border border-amber-900/50"
+          inactive-class="text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-200"
+          @click="isSidebarOpen = false"
+        >
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+          Borrador Fixture
+        </NuxtLink>
+
+        <NuxtLink 
+          to="/intranet/programacion/vistaBorradorFixture" 
+          class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold tracking-wide transition-all"
+          active-class="bg-amber-900/20 text-amber-500 border border-amber-900/50"
+          inactive-class="text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-200"
+          @click="isSidebarOpen = false"
+        >
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+          Vista Previa de Fixtures
+        </NuxtLink>
       </nav>
 
       <!-- Botón de Cerrar Sesión -->

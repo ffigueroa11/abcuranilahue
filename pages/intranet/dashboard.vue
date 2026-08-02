@@ -58,6 +58,16 @@
     </div>
   </section>
 
+  <section class="mt-12">
+    <h2 class="text-2xl font-black text-white uppercase tracking-tight mb-4">Recalcular Tabla de Posiciones</h2>
+    <p class="text-zinc-400 text-sm mb-6">Recalcula la tabla de posiciones basada en los partidos finalizados.</p>
+    <div class="flex flex-col md:flex-row gap-6">
+      <div class="flex-1">
+        <PanelRecalcularPosiciones />
+      </div>
+    </div>
+  </section>
+
 </template>
 
 
