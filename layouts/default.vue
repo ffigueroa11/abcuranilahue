@@ -84,7 +84,7 @@ const isMobileMenuOpen = ref(false);
           <h3 class="text-zinc-100 font-black uppercase mb-4 tracking-widest border-l-2 border-amber-600 pl-2">Competición</h3>
           <ul class="space-y-3 text-zinc-400">
             <li><NuxtLink to="/equipos" class="hover:text-amber-500 transition-colors">Equipos Participantes</NuxtLink></li>
-            <!-- <li><NuxtLink to="/documentos/bases" class="hover:text-amber-500 transition-colors">Bases del Campeonato</NuxtLink></li> -->
+            <li><NuxtLink to="/reglamento" class="hover:text-amber-500 transition-colors">Bases del Campeonato</NuxtLink></li>
             <!-- <li><NuxtLink to="/documentos/tribunal" class="hover:text-amber-500 transition-colors">Tribunal de Disciplina</NuxtLink></li> -->
           </ul>
         </div>
