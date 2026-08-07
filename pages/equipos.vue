@@ -35,9 +35,10 @@
       </div>
 
       <div v-else-if="equiposFiltrados && equiposFiltrados.length > 0" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        <div 
+        <NuxtLink 
           v-for="club in equiposFiltrados" 
           :key="club.id" 
+          :to="`/clubes/${club.id}`"
           class="bg-zinc-900/60 border border-zinc-800/80 rounded-xl p-6 flex flex-col items-center text-center relative overflow-hidden group hover:border-zinc-600 transition-all shadow-lg backdrop-blur-sm"
         >
           <!-- Efecto sutil al pasar el mouse -->
@@ -57,7 +58,7 @@
           <span class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest relative z-10">
             Club Oficial
           </span>
-        </div>
+        </NuxtLink>
       </div>
 
       <div v-else class="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-12 text-center">

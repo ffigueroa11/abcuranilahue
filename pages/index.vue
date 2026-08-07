@@ -28,13 +28,13 @@
         </div>
         
         <div v-else-if="clubes && clubes.length > 0" class="grid grid-cols-3 sm:grid-cols-4 gap-4 relative z-10">
-          <div v-for="club in clubes" :key="club.id" class="flex flex-col items-center justify-center group cursor-pointer p-2 rounded-xl hover:bg-zinc-800/50 transition-all">
+          <NuxtLink v-for="club in clubes" :key="club.id" :to="`/clubes/${club.id}`" class="flex flex-col items-center justify-center group p-2 rounded-xl hover:bg-zinc-800/50 transition-all">
             <div class="w-16 h-16 bg-zinc-900 rounded-full flex items-center justify-center border border-zinc-700 shadow-inner group-hover:border-amber-600 transition-all mb-3 overflow-hidden">
               <img v-if="club.logo_url" :src="club.logo_url" :alt="club.nombre" class="w-full h-full object-cover p-1" />
               <span v-else class="text-xl font-black text-zinc-300">{{ club.nombre.charAt(0) }}</span>
             </div>
             <span class="text-[10px] text-center text-zinc-400 font-bold uppercase truncate w-full group-hover:text-zinc-200 transition-colors">{{ club.nombre }}</span>
-          </div>
+          </NuxtLink>
         </div>
       </div>
     </section>
